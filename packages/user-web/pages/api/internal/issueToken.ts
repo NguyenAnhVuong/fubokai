@@ -15,5 +15,5 @@ export const issueToken = (id: string) =>
       },
     },
     key,
-    { algorithm: "RS256", expiresIn: "1h" },
+    { algorithm: "RS256", expiresIn: "30d" },
   );

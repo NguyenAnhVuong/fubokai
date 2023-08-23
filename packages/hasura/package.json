@@ -4,8 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "hasura:migration": "source .env && hasura migrate apply --admin-secret ${HASURA_GRAPHQL_ADMIN_SECRET} && hasura metadata apply --admin-secret ${HASURA_GRAPHQL_ADMIN_SECRET}",
-    "hasura:console": "source .env && hasura console --admin-secret ${HASURA_GRAPHQL_ADMIN_SECRET}"
+    "hasura:migration": "hasura migrate apply --admin-secret CC65CD27-E740-475E-9FCC-FFB9D8B3DA89 && hasura metadata apply --admin-secret CC65CD27-E740-475E-9FCC-FFB9D8B3DA89",
+    "hasura:console": "hasura console --admin-secret CC65CD27-E740-475E-9FCC-FFB9D8B3DA89"
   },
   "devDependencies": {
     "hasura-cli": "^v2.0.0-beta.1"

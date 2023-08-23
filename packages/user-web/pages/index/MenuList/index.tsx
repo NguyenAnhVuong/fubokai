@@ -1,13 +1,14 @@
 import { Spacer } from "components/Spacer";
 import Image from "next/image";
 import { Menu } from "pages/index/types";
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import { formatPrice } from "util/formatPrice";
 
 import { Badge, IconButton, Typography } from "@material-ui/core";
 import { CartItem } from "hooks/useCartItems/types";
 import { Add, Remove } from "@material-ui/icons";
+import { useAuth } from "hooks/useAuth";
 
 const Container = styled.div`
   display: flex;
@@ -71,7 +72,9 @@ type Props = {
 };
 
 export const MenuList = ({ menus, cartItems, onAdd, onRemove }: Props) => {
-  const cartCountMap = cartItems.reduce((acc, { menuId, quantity }) => {
+  const userId = useAuth().userId;
+  const cartCountMap = cartItems.reduce((acc, { menuId, quantity, user }) => {
+    if (user.id !== userId) return acc;
     acc[menuId] = (acc[menuId] ?? 0) + quantity;
     return acc;
   }, {} as Record<string, number>);

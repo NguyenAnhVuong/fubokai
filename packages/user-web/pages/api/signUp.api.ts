@@ -25,7 +25,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     await prisma.user.create({ data: { id, name, password: hashedPassword } });
 
     const token = issueToken(id);
-    return res.status(200).json({ token });
+    return res.status(200).json({ id, token });
   } catch {
     return res.status(400).json({ message: "Failed to create user" });
   }

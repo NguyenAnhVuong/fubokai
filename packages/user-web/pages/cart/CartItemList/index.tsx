@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { formatPrice } from "util/formatPrice";
 
 import { Badge, Typography } from "@material-ui/core";
+import { useAuth } from "hooks/useAuth";
 
 const Container = styled.div`
   display: flex;
@@ -38,20 +39,25 @@ type Props = {
   cartItems: CartItem[];
 };
 
-export const CartItemList = ({ cartItems }: Props) => (
-  <Container>
-    {cartItems.map(({ id, name, price, quantity, menu }) => (
-      <Card key={id}>
-        <Badge badgeContent={quantity} color="secondary">
-          <StyledImage key={menu.image} src={`/images/${menu.image}`} width={64} height={64} alt={name} />
-        </Badge>
-        <Spacer size={1} />
-        <Description>
-          <Name>{name}</Name>
+export const CartItemList = ({ cartItems }: Props) => {
+  const userId = useAuth().userId;
+  const myCartItems = cartItems.filter(({ user }) => user.id === userId);
+
+  return (
+    <Container>
+      {myCartItems.map(({ id, name, price, quantity, menu }) => (
+        <Card key={id}>
+          <Badge badgeContent={quantity} color="secondary">
+            <StyledImage key={menu.image} src={`/images/${menu.image}`} width={64} height={64} alt={name} />
+          </Badge>
           <Spacer size={1} />
-          <Typography variant="caption">{formatPrice(price * quantity)}</Typography>
-        </Description>
-      </Card>
-    ))}
-  </Container>
-);
+          <Description>
+            <Name>{name}</Name>
+            <Spacer size={1} />
+            <Typography variant="caption">{formatPrice(price * quantity)}</Typography>
+          </Description>
+        </Card>
+      ))}
+    </Container>
+  );
+};

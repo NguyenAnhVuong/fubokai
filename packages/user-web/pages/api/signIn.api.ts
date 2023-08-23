@@ -23,7 +23,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
   const token = issueToken(id);
 
-  return res.status(200).json({ token });
+  return res.status(200).json({ id, token });
 };
 
 export default handler;

@@ -11,12 +11,15 @@ const Index = () => {
   const { data: categoriesAndMenusData } = useIndexGetCategoriesAndMenusQuery();
   const categories = categoriesAndMenusData?.category ?? [];
   const menus = categoriesAndMenusData?.menu ?? [];
+  const [textSearch, setTextSearch] = useState<string>("");
 
   const { cartItems } = useCartItems();
 
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
 
-  const filteredMenus = menus.filter(({ categoryId }) => categoryId === (selectedCategoryId ?? categories[0]?.id));
+  const filteredMenus = menus.filter(
+    ({ name, categoryId }) => (textSearch ? name.includes(textSearch) : true) && categoryId === (selectedCategoryId ?? categories[0]?.id),
+  );
 
   const [addMenuIntoCart] = useIndexAddMenuIntoCartMutation();
 
@@ -31,7 +34,7 @@ const Index = () => {
       <Head>
         <title>MO App</title>
       </Head>
-      <Header />
+      <Header setTextSearch={setTextSearch} />
       <AppBar categories={categories} onChange={setSelectedCategoryId} />
       <MenuList menus={filteredMenus} cartItems={cartItems} onAdd={onAdd} onRemove={onRemove} />
       <Fab cartItems={cartItems} />

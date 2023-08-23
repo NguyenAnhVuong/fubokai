@@ -1,5 +1,6 @@
 mutation SignIn($input: SignInInput!) {
   signIn(input: $input) {
+    id
     token
   }
 }

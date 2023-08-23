@@ -1,0 +1,7 @@
+bug:
+- Người khác thêm vào card nhưng vẫn thấy số hiện thị số lượng của người khác ở trang home và cart nhưng khi order thì lại chỉ thêm số của mình. (done);
+
+Tính năng mới:
+- Search
+- Reorder
+- Xem được thông tin người order và ngày order

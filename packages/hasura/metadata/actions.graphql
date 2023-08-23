@@ -1,94 +1,80 @@
 type Mutation {
-  addMenuIntoCart (
-    input: AddMenuIntoCartInput!
-  ): AddMenuIntoCartOutput
+  addMenuIntoCart(input: AddMenuIntoCartInput!): AddMenuIntoCartOutput
 }
-
 
 type Mutation {
-  orderCartItems : OrderCartItemsOutput
+  orderCartItems: OrderCartItemsOutput
 }
-
 
 type Mutation {
-  removeMenuFromCart (
-    input: RemoveMenuFromCartInput!
-  ): RemoveMenuFromCartOutput
+  removeMenuFromCart(input: RemoveMenuFromCartInput!): RemoveMenuFromCartOutput
 }
-
 
 type Mutation {
-  signIn (
-    input: SignInInput!
-  ): SignInOutput
+  signIn(input: SignInInput!): SignInOutput
 }
-
 
 type Mutation {
-  signUp (
-    input: SignUpInput!
-  ): SignUpOutput
+  signUp(input: SignUpInput!): SignUpOutput
 }
-
-
-
 
 input SignUpInput {
-  id : String!
-  name : String!
-  password : String!
+  id: String!
+  name: String!
+  password: String!
 }
 
 input SignInInput {
-  id : String!
-  password : String!
+  id: String!
+  password: String!
 }
 
 input AddCartInput {
-  menuId : uuid!
-  quantity : Int!
+  menuId: uuid!
+  quantity: Int!
 }
 
 input AddMenuIntoCartInput {
-  menuId : uuid!
-  quantity : Int!
+  menuId: uuid!
+  quantity: Int!
 }
 
 input AddMenuIntoInput {
-  menuId : uuid!
-  quantity : Int!
+  menuId: uuid!
+  quantity: Int!
 }
 
 input RemoveMenuFromCartInput {
-  menuId : uuid!
-  quantity : Int!
+  menuId: uuid!
+  quantity: Int!
 }
 
 type SignUpOutput {
-  token : String!
+  id: String!
+  token: String!
 }
 
 type SignInOutput {
-  token : String!
+  id: String!
+  token: String!
 }
 
 type AddCartOutput {
-  success : Boolean!
+  success: Boolean!
 }
 
 type AddMenuIntoCartOutput {
-  success : Boolean!
+  success: Boolean!
 }
 
 type AddMenuIntoOutput {
-  success : Boolean!
+  success: Boolean!
 }
 
 type RemoveMenuFromCartOutput {
-  success : Boolean!
+  success: Boolean!
 }
 
 type OrderCartItemsOutput {
-  success : Boolean!
+  success: Boolean!
 }
-
