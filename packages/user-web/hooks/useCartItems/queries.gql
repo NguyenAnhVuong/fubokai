@@ -8,5 +8,9 @@ subscription CartItems {
     menu {
       image
     }
+    user {
+      id
+      name
+    }
   }
 }

@@ -8,7 +8,11 @@ subscription Orders {
     price
     quantity
     menu {
+      id
       image
+    }
+    user {
+      name
     }
   }
 }
