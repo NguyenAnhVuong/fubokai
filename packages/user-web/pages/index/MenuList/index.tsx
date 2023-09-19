@@ -1,6 +1,6 @@
 import { Spacer } from "components/Spacer";
 import Image from "next/image";
-import { Menu } from "pages/index/types";
+import { FilteredMenu, Menu } from "pages/index/types";
 import React, { useContext } from "react";
 import styled from "styled-components";
 import { formatPrice } from "util/formatPrice";
@@ -65,7 +65,7 @@ const Description = styled.div`
 `;
 
 type Props = {
-  menus: Menu[];
+  menus: FilteredMenu[];
   cartItems: CartItem[];
   onAdd: (menuId: string) => void;
   onRemove: (menuId: string) => void;

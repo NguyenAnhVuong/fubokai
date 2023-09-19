@@ -32,10 +32,10 @@ const SearchBar = styled(OutlinedInput).attrs({
 `;
 
 type Props = {
-  setTextSearch: (textSearch: string) => void;
+  setKeyWord: (keyword: string) => void;
 };
 
-export const Header = ({ setTextSearch }: Props) => {
+export const Header = ({ setKeyWord }: Props) => {
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
@@ -45,7 +45,7 @@ export const Header = ({ setTextSearch }: Props) => {
   return (
     <Container>
       <HistoryButton onClick={() => router.push("/history")}>履歴</HistoryButton>
-      <SearchBar onChange={(e) => setTextSearch(e.target.value)} defaultValue={""} />
+      <SearchBar onChange={(e) => setKeyWord(e.target.value)} defaultValue={""} />
       <IconButton color="inherit" onClick={(e) => setAnchorEl(e.currentTarget)}>
         <MoreVertOutlined />
       </IconButton>

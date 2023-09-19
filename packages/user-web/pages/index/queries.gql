@@ -12,6 +12,15 @@ query IndexGetCategoriesAndMenus {
   }
 }
 
+query IndexGetMenuByCategoryIdAndKeyword($keyword: String, $categoryId: uuid) {
+  menu(where: { name: { _like: $keyword }, categoryId: { _eq: $categoryId } }) {
+    id
+    image
+    name
+    price
+  }
+}
+
 mutation IndexAddMenuIntoCart($input: AddMenuIntoCartInput!) {
   addMenuIntoCart(input: $input) {
     success

@@ -4,22 +4,32 @@ import { AppBar } from "pages/index/AppBar";
 import { Fab } from "pages/index/Fab";
 import { Header } from "pages/index/Header";
 import { MenuList } from "pages/index/MenuList";
-import { useIndexAddMenuIntoCartMutation, useIndexGetCategoriesAndMenusQuery, useIndexRemoveMenuFromCartMutation } from "pages/index/queries";
-import React, { useCallback, useState } from "react";
+import {
+  useIndexAddMenuIntoCartMutation,
+  useIndexGetCategoriesAndMenusQuery,
+  useIndexGetMenuByCategoryIdAndKeywordQuery,
+  useIndexRemoveMenuFromCartMutation,
+} from "pages/index/queries";
+import { useCallback, useState } from "react";
 
 const Index = () => {
   const { data: categoriesAndMenusData } = useIndexGetCategoriesAndMenusQuery();
   const categories = categoriesAndMenusData?.category ?? [];
   const menus = categoriesAndMenusData?.menu ?? [];
-  const [textSearch, setTextSearch] = useState<string>("");
+  const [keyWord, setKeyWord] = useState<string>("");
 
   const { cartItems } = useCartItems();
 
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
 
-  const filteredMenus = menus.filter(
-    ({ name, categoryId }) => (textSearch ? name.includes(textSearch) : true) && categoryId === (selectedCategoryId ?? categories[0]?.id),
-  );
+  if (categories.length > 0 && selectedCategoryId === null) {
+    setSelectedCategoryId(categories[0].id);
+  }
+
+  const { data: filteredMenu, error } = useIndexGetMenuByCategoryIdAndKeywordQuery({
+    variables: { keyword: `%${keyWord}%`, categoryId: selectedCategoryId },
+    skip: !selectedCategoryId,
+  });
 
   const [addMenuIntoCart] = useIndexAddMenuIntoCartMutation();
 
@@ -29,14 +39,18 @@ const Index = () => {
 
   const onRemove = useCallback((menuId: string) => removeMenuFromCart({ variables: { input: { menuId, quantity: 1 } } }), [removeMenuFromCart]);
 
+  if (error) {
+    return <div>error</div>;
+  }
+
   return (
     <>
       <Head>
         <title>MO App</title>
       </Head>
-      <Header setTextSearch={setTextSearch} />
+      <Header setKeyWord={setKeyWord} />
       <AppBar categories={categories} onChange={setSelectedCategoryId} />
-      <MenuList menus={filteredMenus} cartItems={cartItems} onAdd={onAdd} onRemove={onRemove} />
+      {filteredMenu && filteredMenu.menu.length > 0 && <MenuList menus={filteredMenu.menu} cartItems={cartItems} onAdd={onAdd} onRemove={onRemove} />}
       <Fab cartItems={cartItems} />
     </>
   );
