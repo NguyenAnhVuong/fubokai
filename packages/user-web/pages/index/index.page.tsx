@@ -1,3 +1,4 @@
+import { useAuth } from "hooks/useAuth";
 import { useCartItems } from "hooks/useCartItems";
 import Head from "next/head";
 import { AppBar } from "pages/index/AppBar";
@@ -5,10 +6,10 @@ import { Fab } from "pages/index/Fab";
 import { Header } from "pages/index/Header";
 import { MenuList } from "pages/index/MenuList";
 import {
-  useIndexAddMenuIntoCartMutation,
+  useAddMenuIntoCartMutation,
   useIndexGetCategoriesAndMenusQuery,
   useIndexGetMenuByCategoryIdAndKeywordQuery,
-  useIndexRemoveMenuFromCartMutation,
+  useRemoveMenuFromCartMutation,
 } from "pages/index/queries";
 import { useCallback, useState } from "react";
 
@@ -17,8 +18,9 @@ const Index = () => {
   const categories = categoriesAndMenusData?.category ?? [];
   const menus = categoriesAndMenusData?.menu ?? [];
   const [keyWord, setKeyWord] = useState<string>("");
+  const { usingCartId } = useAuth();
 
-  const { cartItems } = useCartItems();
+  const { cartItems } = useCartItems(usingCartId);
 
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
 
@@ -31,13 +33,27 @@ const Index = () => {
     skip: !selectedCategoryId,
   });
 
-  const [addMenuIntoCart] = useIndexAddMenuIntoCartMutation();
+  const [addMenuIntoCart] = useAddMenuIntoCartMutation();
 
-  const [removeMenuFromCart] = useIndexRemoveMenuFromCartMutation();
+  const [removeMenuFromCart] = useRemoveMenuFromCartMutation();
 
-  const onAdd = useCallback((menuId: string) => addMenuIntoCart({ variables: { input: { menuId, quantity: 1 } } }), [addMenuIntoCart]);
+  const onAdd = useCallback(
+    (menuId: string) => {
+      if (usingCartId) {
+        addMenuIntoCart({ variables: { input: { menuId, quantity: 1, cartId: usingCartId } } });
+      }
+    },
+    [addMenuIntoCart, usingCartId],
+  );
 
-  const onRemove = useCallback((menuId: string) => removeMenuFromCart({ variables: { input: { menuId, quantity: 1 } } }), [removeMenuFromCart]);
+  const onRemove = useCallback(
+    (menuId: string) => {
+      if (usingCartId) {
+        removeMenuFromCart({ variables: { input: { menuId, quantity: 1, cartId: usingCartId } } });
+      }
+    },
+    [removeMenuFromCart, usingCartId],
+  );
 
   if (error) {
     return <div>error</div>;
@@ -50,7 +66,9 @@ const Index = () => {
       </Head>
       <Header setKeyWord={setKeyWord} />
       <AppBar categories={categories} onChange={setSelectedCategoryId} />
-      {filteredMenu && filteredMenu.menu.length > 0 && <MenuList menus={filteredMenu.menu} cartItems={cartItems} onAdd={onAdd} onRemove={onRemove} />}
+      {filteredMenu && filteredMenu.menu.length > 0 && (
+        <MenuList menus={filteredMenu.menu} cartItems={cartItems} onAdd={onAdd} onRemove={onRemove} />
+      )}
       <Fab cartItems={cartItems} />
     </>
   );

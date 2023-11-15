@@ -16,19 +16,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   if (tokenResult === null || typeof tokenResult === "string") return res.status(400).json({ message: "Invalid token" });
 
   const { id: addedUserId } = tokenResult;
-  const { menuId, quantity } = req.body.input.input as AddMenuIntoCartInput;
+  const { menuId, quantity, cartId } = req.body.input.input as AddMenuIntoCartInput;
 
   const menu = await prisma.menu.findUnique({ where: { id: menuId } });
   if (menu === null) return res.status(400).json({ message: "Menu doesn't exist" });
 
-  const cartItem = await prisma.cartItem.findFirst({ where: { menuId, addedUserId } });
+  const cartItem = await prisma.cartItem.findFirst({ where: { menuId, addedUserId, cartId } });
 
   try {
-    const { name, price } = menu;
     if (cartItem) {
       await prisma.cartItem.update({ where: { id: cartItem.id }, data: { quantity: { increment: quantity } } });
     } else {
-      await prisma.cartItem.create({ data: { menuId, addedUserId, name, price, quantity } });
+      await prisma.cartItem.create({ data: { menuId, addedUserId, quantity, cartId } });
     }
 
     return res.status(200).json({ success: true });

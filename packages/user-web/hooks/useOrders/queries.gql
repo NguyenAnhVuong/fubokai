@@ -1,18 +1,18 @@
-subscription Orders {
-  order {
+subscription Orders($userId: String) {
+  order(where: { orderedUserId: { _eq: $userId } }) {
     id
-    menuId
-    name
     orderedUserId
     orderedAt
-    price
-    quantity
-    menu {
+    totalPrice
+    orderItems {
       id
-      image
-    }
-    user {
-      name
+      menu {
+        id
+        name
+        price
+        image
+      }
+      quantity
     }
   }
 }

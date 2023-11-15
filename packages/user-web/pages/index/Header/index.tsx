@@ -1,8 +1,8 @@
-import { Button, IconButton, Menu, MenuItem, OutlinedInput, TextField } from "@material-ui/core";
-import { HistoryOutlined, MoreVertOutlined, Search } from "@material-ui/icons";
+import { Button, IconButton, Menu, MenuItem, OutlinedInput } from "@material-ui/core";
+import { HistoryOutlined, MoreVertOutlined, Search, ShoppingCart } from "@material-ui/icons";
 import { useSignOut } from "hooks/useSignOut";
 import { useRouter } from "next/dist/client/router";
-import React, { KeyboardEvent, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -14,6 +14,11 @@ const Container = styled.div`
   padding: ${({ theme }) => theme.spacing(1)}px ${({ theme }) => theme.spacing(1)}px;
   position: relative;
 `;
+
+const CartButton = styled(Button).attrs({
+  startIcon: <ShoppingCart />,
+  color: "inherit",
+})``;
 
 const HistoryButton = styled(Button).attrs({
   startIcon: <HistoryOutlined />,
@@ -44,12 +49,19 @@ export const Header = ({ setKeyWord }: Props) => {
 
   return (
     <Container>
-      <HistoryButton onClick={() => router.push("/history")}>履歴</HistoryButton>
+      {/* <HistoryButton onClick={() => router.push("/history")}>履歴</HistoryButton> */}
+      <CartButton></CartButton>
       <SearchBar onChange={(e) => setKeyWord(e.target.value)} defaultValue={""} />
       <IconButton color="inherit" onClick={(e) => setAnchorEl(e.currentTarget)}>
         <MoreVertOutlined />
       </IconButton>
       <Menu anchorEl={anchorEl} open={open} onClose={() => setAnchorEl(null)}>
+        <MenuItem>
+          <CartButton onClick={() => router.push("/carts")}>カートリスト</CartButton>
+        </MenuItem>
+        <MenuItem>
+          <HistoryButton onClick={() => router.push("/history")}>履歴</HistoryButton>
+        </MenuItem>
         <MenuItem onClick={signOut}>ログアウト</MenuItem>
       </Menu>
     </Container>

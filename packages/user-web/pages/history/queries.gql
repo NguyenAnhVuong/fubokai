@@ -2,8 +2,6 @@ query CartGetCartItems {
   cartItem {
     id
     menuId
-    name
-    price
     quantity
     menu {
       image
@@ -11,8 +9,8 @@ query CartGetCartItems {
   }
 }
 
-mutation CartOrderCartItems {
-  orderCartItems {
+mutation CartOrderCartItems($input: OrderCartItemsInput!) {
+  orderCartItems(input: $input) {
     success
   }
 }

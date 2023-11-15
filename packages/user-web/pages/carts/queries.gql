@@ -1,0 +1,19 @@
+mutation AddCart($name: String, $creatorId: String) {
+  insert_cart_one(object: { name: $name, creatorId: $creatorId }) {
+    id
+  }
+}
+
+mutation AddUserCart($userId: String, $cartId: uuid) {
+  insert_userCart_one(object: { userId: $userId, cartId: $cartId }) {
+    id
+  }
+}
+
+query GetCarts($userId: String) {
+  cart(where: { userCarts: { userId: { _eq: $userId } } }) {
+    id
+    name
+    creatorId
+  }
+}

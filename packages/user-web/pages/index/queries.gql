@@ -21,13 +21,13 @@ query IndexGetMenuByCategoryIdAndKeyword($keyword: String, $categoryId: uuid) {
   }
 }
 
-mutation IndexAddMenuIntoCart($input: AddMenuIntoCartInput!) {
+mutation AddMenuIntoCart($input: AddMenuIntoCartInput!) {
   addMenuIntoCart(input: $input) {
     success
   }
 }
 
-mutation IndexRemoveMenuFromCart($input: RemoveMenuFromCartInput!) {
+mutation RemoveMenuFromCart($input: RemoveMenuFromCartInput!) {
   removeMenuFromCart(input: $input) {
     success
   }

@@ -16,12 +16,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   if (tokenResult === null || typeof tokenResult === "string") return res.status(400).json({ message: "Invalid token" });
 
   const { id: addedUserId } = tokenResult;
-  const { menuId, quantity } = req.body.input.input as RemoveMenuFromCartInput;
+  const { menuId, quantity, cartId } = req.body.input.input as RemoveMenuFromCartInput;
 
   const menu = await prisma.menu.findUnique({ where: { id: menuId } });
   if (menu === null) return res.status(400).json({ message: "Menu doesn't exist" });
 
-  const cartItem = await prisma.cartItem.findFirst({ where: { menuId, addedUserId } });
+  const cartItem = await prisma.cartItem.findFirst({ where: { menuId, addedUserId, cartId } });
 
   try {
     if (cartItem) {

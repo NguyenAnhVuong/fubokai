@@ -85,7 +85,13 @@ export const MenuList = ({ menus, cartItems, onAdd, onRemove }: Props) => {
         <Card key={id}>
           <Badge badgeContent={cartCountMap[id] ?? 0} color="secondary">
             <CardImage>
-              <StyledImage key={image} src={`http://localhost:3000/images/${image}`} width={160} height={160} alt={name} />
+              <StyledImage
+                key={image}
+                src={`http://localhost:3000/images/${image}`}
+                width={160}
+                height={160}
+                alt={name}
+              />
             </CardImage>
             <CardActions>
               {cartCountMap[id] > 0 && (

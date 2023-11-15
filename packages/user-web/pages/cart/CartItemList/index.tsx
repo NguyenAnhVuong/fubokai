@@ -45,16 +45,16 @@ export const CartItemList = ({ cartItems }: Props) => {
 
   return (
     <Container>
-      {myCartItems.map(({ id, name, price, quantity, menu }) => (
+      {myCartItems.map(({ id, quantity, menu }) => (
         <Card key={id}>
           <Badge badgeContent={quantity} color="secondary">
-            <StyledImage key={menu.image} src={`/images/${menu.image}`} width={64} height={64} alt={name} />
+            <StyledImage key={menu.image} src={`/images/${menu.image}`} width={64} height={64} alt={menu.name} />
           </Badge>
           <Spacer size={1} />
           <Description>
-            <Name>{name}</Name>
+            <Name>{menu.name}</Name>
             <Spacer size={1} />
-            <Typography variant="caption">{formatPrice(price * quantity)}</Typography>
+            <Typography variant="caption">{formatPrice(menu.price * quantity)}</Typography>
           </Description>
         </Card>
       ))}
