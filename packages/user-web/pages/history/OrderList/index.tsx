@@ -13,14 +13,16 @@ import { CartItem } from "hooks/useCartItems/types";
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  padding: ${({ theme }) => theme.spacing(1)}px;
   padding-bottom: ${({ theme }) => theme.spacing(8)}px;
 `;
 
 const Card = styled.div`
   display: flex;
   align-items: center;
+  flex-direction: column;
   margin: ${({ theme }) => theme.spacing(1)}px;
+  border: 1px solid ${({ theme }) => theme.palette.divider};
+  padding: ${({ theme }) => theme.spacing(1)}px;
 `;
 
 const StyledImage = styled(Image)`
@@ -88,7 +90,24 @@ const Price = styled(Typography).attrs({ variant: "caption" })`
 `;
 
 const OrderDate = styled(Typography).attrs({ variant: "caption" })`
-  font-size: 0.8rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: ${({ theme }) => theme.spacing(1)}px;
+`;
+
+const OrderItem = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: ${({ theme }) => theme.spacing(1)}px;
+  border: 1px solid ${({ theme }) => theme.palette.divider};
+  padding: ${({ theme }) => theme.spacing(1)}px;
+`;
+
+const TotalPrice = styled.div`
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-top: ${({ theme }) => theme.spacing(1)}px;
 `;
 
 type Props = {
@@ -114,32 +133,38 @@ export const OrderList = ({ cartItems, orders, onAdd, onRemove }: Props) => {
 
   return (
     <Container>
-      {sortedOrders.map(({ id, name, price, quantity, orderedAt, menu, user }) => (
+      {sortedOrders.map(({ id, orderedAt, orderItems, totalPrice }) => (
         <Card key={id}>
-          <StyledImage key={menu.image} src={`/images/${menu.image}`} width={64} height={64} alt={name} />
-          <Spacer size={1} />
-          <Description>
-            <ColContainer>
-              <Name>{name}</Name>
-              <Orderer>{user.name}</Orderer>
-              <OrderDate>{dayjs(orderedAt).format("YYYY年MM月DD日 HH:mm")}</OrderDate>
-            </ColContainer>
-            <Quantity>x{quantity}</Quantity>
-            <Spacer size={1} />
-            <ColContainer>
-              <Price>{formatPrice(price * quantity)}</Price>
-              <ProductNumberContainer>
-                <Remove onClick={() => onRemove(menu.id)} />
-                <ProductNumber
-                  value={cartCountMap[menu.id] ?? 0}
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                />
-                <Add onClick={() => onAdd(menu.id)} />
-              </ProductNumberContainer>
-            </ColContainer>
-          </Description>
+          <OrderDate>{dayjs(orderedAt).format("YYYY年MM月DD日 HH:mm")}</OrderDate>
+          {orderItems.length > 0 &&
+            orderItems.map(({ id, menu, quantity }) => (
+              <OrderItem key={id}>
+                <StyledImage key={menu.image} src={`/images/${menu.image}`} width={64} height={64} alt={menu.name} />
+                <Spacer size={1} />
+                <Description>
+                  <ColContainer>
+                    <Name>{menu.name}</Name>
+                    {/* <Orderer>{user.name}</Orderer> */}
+                  </ColContainer>
+                  <Quantity>x{quantity}</Quantity>
+                  <Spacer size={1} />
+                  <ColContainer>
+                    <Price>{formatPrice(menu.price * quantity)}</Price>
+                    <ProductNumberContainer>
+                      <Remove onClick={() => onRemove(menu.id)} />
+                      <ProductNumber
+                        value={cartCountMap[menu.id] ?? 0}
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                      />
+                      <Add onClick={() => onAdd(menu.id)} />
+                    </ProductNumberContainer>
+                  </ColContainer>
+                </Description>
+              </OrderItem>
+            ))}
+          <TotalPrice>合計金額: {totalPrice}</TotalPrice>
         </Card>
       ))}
     </Container>

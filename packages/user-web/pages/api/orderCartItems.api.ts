@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import jwt from "jsonwebtoken";
 import { isValidRequest } from "pages/api/internal/isValidRequest";
 import { prisma } from "pages/api/internal/prisma";
-import { OrderCartItemsOutput, RemoveMenuFromCartInput } from "types/graphql";
+import { OrderCartItemsInput, OrderCartItemsOutput, RemoveMenuFromCartInput } from "types/graphql";
 import { groupBy } from "util/groupBy";
 import { sumBy } from "util/sumBy";
 
@@ -15,29 +15,36 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   if (!token) return res.status(400).json({ message: "Authorization header doesn't exist" });
 
   const tokenResult = jwt.decode(token);
-  if (tokenResult === null || typeof tokenResult === "string") return res.status(400).json({ message: "Invalid token" });
+  if (tokenResult === null || typeof tokenResult === "string")
+    return res.status(400).json({ message: "Invalid token" });
+
+  const { cartId } = req.body.input.input as OrderCartItemsInput;
 
   const { id: userId } = tokenResult;
 
-  const cartItems = await prisma.cartItem.findMany({ where: { addedUserId: userId } });
+  const cartItems = await prisma.cartItem.findMany({ where: { cartId }, include: { menu: true } });
 
   if (cartItems.length === 0) return res.status(400).json({ message: "Cart is empty" });
 
-  const groupedCartItems = groupBy(cartItems, "menuId");
-
-  const orders = Object.values(groupedCartItems).map((menus) => ({
-    menuId: menus[0].menuId,
-    orderedUserId: userId,
-    name: menus[0].name,
-    price: menus[0].price,
-    quantity: sumBy(menus, "quantity"),
-  }));
+  const totalPrice = cartItems.reduce((acc, { menu, quantity }) => acc + menu.price * quantity, 0);
 
   try {
-    await prisma.$transaction([
-      prisma.order.createMany({ data: orders }),
-      prisma.cartItem.deleteMany({ where: { id: { in: cartItems.map(({ id }) => id) } } }),
-    ]);
+    await prisma.$transaction(async (transaction) => {
+      const newOrder = await transaction.order.create({
+        data: {
+          orderedUserId: userId,
+          totalPrice,
+        },
+      });
+      await transaction.orderItem.createMany({
+        data: cartItems.map(({ menu, quantity }) => ({
+          orderId: newOrder.id,
+          menuId: menu.id,
+          quantity,
+        })),
+      });
+      await transaction.cartItem.deleteMany({ where: { cartId } });
+    });
 
     return res.status(200).json({ success: true });
   } catch (err) {

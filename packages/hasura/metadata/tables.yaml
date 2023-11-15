@@ -1,7 +1,39 @@
 - table:
+    name: cart
     schema: public
-    name: cartItem
   object_relationships:
+  - name: user
+    using:
+      foreign_key_constraint_on: creatorId
+  array_relationships:
+  - name: cartItems
+    using:
+      foreign_key_constraint_on:
+        column: cartId
+        table:
+          name: cartItem
+          schema: public
+  - name: userCarts
+    using:
+      foreign_key_constraint_on:
+        column: cartId
+        table:
+          name: userCart
+          schema: public
+  - name: users
+    using:
+      foreign_key_constraint_on:
+        column: usingCartId
+        table:
+          name: user
+          schema: public
+- table:
+    name: cartItem
+    schema: public
+  object_relationships:
+  - name: cart
+    using:
+      foreign_key_constraint_on: cartId
   - name: menu
     using:
       foreign_key_constraint_on: menuId
@@ -12,24 +44,23 @@
   - role: user
     permission:
       columns:
+      - addedUserId
+      - cartId
       - id
       - menuId
-      - addedUserId
-      - name
-      - price
       - quantity
       filter: {}
 - table:
-    schema: public
     name: category
+    schema: public
   array_relationships:
   - name: menus
     using:
       foreign_key_constraint_on:
         column: categoryId
         table:
-          schema: public
           name: menu
+          schema: public
   select_permissions:
   - role: user
     permission:
@@ -38,8 +69,8 @@
       - name
       filter: {}
 - table:
-    schema: public
     name: menu
+    schema: public
   object_relationships:
   - name: category
     using:
@@ -50,15 +81,15 @@
       foreign_key_constraint_on:
         column: menuId
         table:
-          schema: public
           name: cartItem
-  - name: orders
+          schema: public
+  - name: orderItems
     using:
       foreign_key_constraint_on:
         column: menuId
         table:
+          name: orderItem
           schema: public
-          name: order
   select_permissions:
   - role: user
     permission:
@@ -70,38 +101,90 @@
       - image
       filter: {}
 - table:
-    schema: public
     name: order
+    schema: public
   object_relationships:
-  - name: menu
-    using:
-      foreign_key_constraint_on: menuId
   - name: user
     using:
       foreign_key_constraint_on: orderedUserId
+  array_relationships:
+  - name: orderItems
+    using:
+      foreign_key_constraint_on:
+        column: orderId
+        table:
+          name: orderItem
+          schema: public
   select_permissions:
   - role: user
     permission:
       columns:
-      - id
-      - menuId
-      - orderedUserId
-      - name
-      - quantity
       - orderedAt
-      - price
+      - id
+      - orderedUserId
+      - totalPrice
+      - updated_at
       filter: {}
 - table:
+    name: orderItem
     schema: public
+  object_relationships:
+  - name: menu
+    using:
+      foreign_key_constraint_on: menuId
+  - name: order
+    using:
+      foreign_key_constraint_on: orderId
+  select_permissions:
+  - role: user
+    permission:
+      columns:
+      - created_at
+      - id
+      - menuId
+      - orderId
+      - quantity
+      - updated_at
+      filter:
+        order:
+          orderedUserId:
+            _eq: X-Hasura-User-Id
+- table:
     name: user
+    schema: public
+  object_relationships:
+  - name: cart
+    using:
+      foreign_key_constraint_on: usingCartId
   array_relationships:
   - name: cartItems
     using:
       foreign_key_constraint_on:
         column: addedUserId
         table:
-          schema: public
           name: cartItem
+          schema: public
+  - name: carts
+    using:
+      foreign_key_constraint_on:
+        column: creatorId
+        table:
+          name: cart
+          schema: public
+  - name: orders
+    using:
+      foreign_key_constraint_on:
+        column: orderedUserId
+        table:
+          name: order
+          schema: public
+  - name: userCarts
+    using:
+      foreign_key_constraint_on:
+        column: userId
+        table:
+          name: userCart
+          schema: public
   select_permissions:
   - role: user
     permission:
@@ -109,3 +192,13 @@
       - id
       - name
       filter: {}
+- table:
+    name: userCart
+    schema: public
+  object_relationships:
+  - name: cart
+    using:
+      foreign_key_constraint_on: cartId
+  - name: user
+    using:
+      foreign_key_constraint_on: userId

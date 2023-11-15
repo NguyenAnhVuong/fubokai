@@ -14,6 +14,7 @@ directive @cached(
 ) on QUERY
 
 input AddMenuIntoCartInput {
+  cartId: uuid!
   menuId: uuid!
   quantity: Int!
 }
@@ -23,18 +24,408 @@ type AddMenuIntoCartOutput {
 }
 
 """
+columns and relationships of "cart"
+"""
+type cart {
+  """An array relationship"""
+  cartItems(
+    """distinct select on columns"""
+    distinct_on: [cartItem_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [cartItem_order_by!]
+
+    """filter the rows returned"""
+    where: cartItem_bool_exp
+  ): [cartItem!]!
+
+  """An aggregate relationship"""
+  cartItems_aggregate(
+    """distinct select on columns"""
+    distinct_on: [cartItem_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [cartItem_order_by!]
+
+    """filter the rows returned"""
+    where: cartItem_bool_exp
+  ): cartItem_aggregate!
+  createdTime: timestamptz
+  creatorId: String!
+  id: uuid!
+  name: String!
+  updatedTime: timestamptz
+
+  """An object relationship"""
+  user: user!
+
+  """An array relationship"""
+  userCarts(
+    """distinct select on columns"""
+    distinct_on: [userCart_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [userCart_order_by!]
+
+    """filter the rows returned"""
+    where: userCart_bool_exp
+  ): [userCart!]!
+
+  """An aggregate relationship"""
+  userCarts_aggregate(
+    """distinct select on columns"""
+    distinct_on: [userCart_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [userCart_order_by!]
+
+    """filter the rows returned"""
+    where: userCart_bool_exp
+  ): userCart_aggregate!
+
+  """An array relationship"""
+  users(
+    """distinct select on columns"""
+    distinct_on: [user_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_order_by!]
+
+    """filter the rows returned"""
+    where: user_bool_exp
+  ): [user!]!
+
+  """An aggregate relationship"""
+  users_aggregate(
+    """distinct select on columns"""
+    distinct_on: [user_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_order_by!]
+
+    """filter the rows returned"""
+    where: user_bool_exp
+  ): user_aggregate!
+}
+
+"""
+aggregated selection of "cart"
+"""
+type cart_aggregate {
+  aggregate: cart_aggregate_fields
+  nodes: [cart!]!
+}
+
+input cart_aggregate_bool_exp {
+  count: cart_aggregate_bool_exp_count
+}
+
+input cart_aggregate_bool_exp_count {
+  arguments: [cart_select_column!]
+  distinct: Boolean
+  filter: cart_bool_exp
+  predicate: Int_comparison_exp!
+}
+
+"""
+aggregate fields of "cart"
+"""
+type cart_aggregate_fields {
+  count(columns: [cart_select_column!], distinct: Boolean): Int!
+  max: cart_max_fields
+  min: cart_min_fields
+}
+
+"""
+order by aggregate values of table "cart"
+"""
+input cart_aggregate_order_by {
+  count: order_by
+  max: cart_max_order_by
+  min: cart_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "cart"
+"""
+input cart_arr_rel_insert_input {
+  data: [cart_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: cart_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "cart". All fields are combined with a logical 'AND'.
+"""
+input cart_bool_exp {
+  _and: [cart_bool_exp!]
+  _not: cart_bool_exp
+  _or: [cart_bool_exp!]
+  cartItems: cartItem_bool_exp
+  cartItems_aggregate: cartItem_aggregate_bool_exp
+  createdTime: timestamptz_comparison_exp
+  creatorId: String_comparison_exp
+  id: uuid_comparison_exp
+  name: String_comparison_exp
+  updatedTime: timestamptz_comparison_exp
+  user: user_bool_exp
+  userCarts: userCart_bool_exp
+  userCarts_aggregate: userCart_aggregate_bool_exp
+  users: user_bool_exp
+  users_aggregate: user_aggregate_bool_exp
+}
+
+"""
+unique or primary key constraints on table "cart"
+"""
+enum cart_constraint {
+  """
+  unique or primary key constraint on columns "name"
+  """
+  cart_name_key
+
+  """
+  unique or primary key constraint on columns "id"
+  """
+  cart_pkey
+}
+
+"""
+input type for inserting data into table "cart"
+"""
+input cart_insert_input {
+  cartItems: cartItem_arr_rel_insert_input
+  createdTime: timestamptz
+  creatorId: String
+  id: uuid
+  name: String
+  updatedTime: timestamptz
+  user: user_obj_rel_insert_input
+  userCarts: userCart_arr_rel_insert_input
+  users: user_arr_rel_insert_input
+}
+
+"""aggregate max on columns"""
+type cart_max_fields {
+  createdTime: timestamptz
+  creatorId: String
+  id: uuid
+  name: String
+  updatedTime: timestamptz
+}
+
+"""
+order by max() on columns of table "cart"
+"""
+input cart_max_order_by {
+  createdTime: order_by
+  creatorId: order_by
+  id: order_by
+  name: order_by
+  updatedTime: order_by
+}
+
+"""aggregate min on columns"""
+type cart_min_fields {
+  createdTime: timestamptz
+  creatorId: String
+  id: uuid
+  name: String
+  updatedTime: timestamptz
+}
+
+"""
+order by min() on columns of table "cart"
+"""
+input cart_min_order_by {
+  createdTime: order_by
+  creatorId: order_by
+  id: order_by
+  name: order_by
+  updatedTime: order_by
+}
+
+"""
+response of any mutation on the table "cart"
+"""
+type cart_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [cart!]!
+}
+
+"""
+input type for inserting object relation for remote table "cart"
+"""
+input cart_obj_rel_insert_input {
+  data: cart_insert_input!
+
+  """upsert condition"""
+  on_conflict: cart_on_conflict
+}
+
+"""
+on_conflict condition type for table "cart"
+"""
+input cart_on_conflict {
+  constraint: cart_constraint!
+  update_columns: [cart_update_column!]! = []
+  where: cart_bool_exp
+}
+
+"""Ordering options when selecting data from "cart"."""
+input cart_order_by {
+  cartItems_aggregate: cartItem_aggregate_order_by
+  createdTime: order_by
+  creatorId: order_by
+  id: order_by
+  name: order_by
+  updatedTime: order_by
+  user: user_order_by
+  userCarts_aggregate: userCart_aggregate_order_by
+  users_aggregate: user_aggregate_order_by
+}
+
+"""primary key columns input for table: cart"""
+input cart_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "cart"
+"""
+enum cart_select_column {
+  """column name"""
+  createdTime
+
+  """column name"""
+  creatorId
+
+  """column name"""
+  id
+
+  """column name"""
+  name
+
+  """column name"""
+  updatedTime
+}
+
+"""
+input type for updating data in table "cart"
+"""
+input cart_set_input {
+  createdTime: timestamptz
+  creatorId: String
+  id: uuid
+  name: String
+  updatedTime: timestamptz
+}
+
+"""
+Streaming cursor of the table "cart"
+"""
+input cart_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: cart_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input cart_stream_cursor_value_input {
+  createdTime: timestamptz
+  creatorId: String
+  id: uuid
+  name: String
+  updatedTime: timestamptz
+}
+
+"""
+update columns of table "cart"
+"""
+enum cart_update_column {
+  """column name"""
+  createdTime
+
+  """column name"""
+  creatorId
+
+  """column name"""
+  id
+
+  """column name"""
+  name
+
+  """column name"""
+  updatedTime
+}
+
+input cart_updates {
+  """sets the columns of the filtered rows to the given values"""
+  _set: cart_set_input
+
+  """filter the rows which have to be updated"""
+  where: cart_bool_exp!
+}
+
+"""
 columns and relationships of "cartItem"
 """
 type cartItem {
   addedUserId: String!
+
+  """An object relationship"""
+  cart: cart!
+  cartId: uuid!
+  created_at: timestamptz
   id: uuid!
 
   """An object relationship"""
   menu: menu!
   menuId: uuid!
-  name: String!
-  price: Int!
   quantity: Int!
+  updated_at: timestamptz
 
   """An object relationship"""
   user: user!
@@ -105,7 +496,6 @@ input cartItem_arr_rel_insert_input {
 
 """aggregate avg on columns"""
 type cartItem_avg_fields {
-  price: Float
   quantity: Float
 }
 
@@ -113,7 +503,6 @@ type cartItem_avg_fields {
 order by avg() on columns of table "cartItem"
 """
 input cartItem_avg_order_by {
-  price: order_by
   quantity: order_by
 }
 
@@ -125,12 +514,14 @@ input cartItem_bool_exp {
   _not: cartItem_bool_exp
   _or: [cartItem_bool_exp!]
   addedUserId: String_comparison_exp
+  cart: cart_bool_exp
+  cartId: uuid_comparison_exp
+  created_at: timestamptz_comparison_exp
   id: uuid_comparison_exp
   menu: menu_bool_exp
   menuId: uuid_comparison_exp
-  name: String_comparison_exp
-  price: Int_comparison_exp
   quantity: Int_comparison_exp
+  updated_at: timestamptz_comparison_exp
   user: user_bool_exp
 }
 
@@ -148,7 +539,6 @@ enum cartItem_constraint {
 input type for incrementing numeric columns in table "cartItem"
 """
 input cartItem_inc_input {
-  price: Int
   quantity: Int
 }
 
@@ -157,23 +547,26 @@ input type for inserting data into table "cartItem"
 """
 input cartItem_insert_input {
   addedUserId: String
+  cart: cart_obj_rel_insert_input
+  cartId: uuid
+  created_at: timestamptz
   id: uuid
   menu: menu_obj_rel_insert_input
   menuId: uuid
-  name: String
-  price: Int
   quantity: Int
+  updated_at: timestamptz
   user: user_obj_rel_insert_input
 }
 
 """aggregate max on columns"""
 type cartItem_max_fields {
   addedUserId: String
+  cartId: uuid
+  created_at: timestamptz
   id: uuid
   menuId: uuid
-  name: String
-  price: Int
   quantity: Int
+  updated_at: timestamptz
 }
 
 """
@@ -181,21 +574,23 @@ order by max() on columns of table "cartItem"
 """
 input cartItem_max_order_by {
   addedUserId: order_by
+  cartId: order_by
+  created_at: order_by
   id: order_by
   menuId: order_by
-  name: order_by
-  price: order_by
   quantity: order_by
+  updated_at: order_by
 }
 
 """aggregate min on columns"""
 type cartItem_min_fields {
   addedUserId: String
+  cartId: uuid
+  created_at: timestamptz
   id: uuid
   menuId: uuid
-  name: String
-  price: Int
   quantity: Int
+  updated_at: timestamptz
 }
 
 """
@@ -203,11 +598,12 @@ order by min() on columns of table "cartItem"
 """
 input cartItem_min_order_by {
   addedUserId: order_by
+  cartId: order_by
+  created_at: order_by
   id: order_by
   menuId: order_by
-  name: order_by
-  price: order_by
   quantity: order_by
+  updated_at: order_by
 }
 
 """
@@ -233,12 +629,14 @@ input cartItem_on_conflict {
 """Ordering options when selecting data from "cartItem"."""
 input cartItem_order_by {
   addedUserId: order_by
+  cart: cart_order_by
+  cartId: order_by
+  created_at: order_by
   id: order_by
   menu: menu_order_by
   menuId: order_by
-  name: order_by
-  price: order_by
   quantity: order_by
+  updated_at: order_by
   user: user_order_by
 }
 
@@ -255,19 +653,22 @@ enum cartItem_select_column {
   addedUserId
 
   """column name"""
+  cartId
+
+  """column name"""
+  created_at
+
+  """column name"""
   id
 
   """column name"""
   menuId
 
   """column name"""
-  name
-
-  """column name"""
-  price
-
-  """column name"""
   quantity
+
+  """column name"""
+  updated_at
 }
 
 """
@@ -275,16 +676,16 @@ input type for updating data in table "cartItem"
 """
 input cartItem_set_input {
   addedUserId: String
+  cartId: uuid
+  created_at: timestamptz
   id: uuid
   menuId: uuid
-  name: String
-  price: Int
   quantity: Int
+  updated_at: timestamptz
 }
 
 """aggregate stddev on columns"""
 type cartItem_stddev_fields {
-  price: Float
   quantity: Float
 }
 
@@ -292,13 +693,11 @@ type cartItem_stddev_fields {
 order by stddev() on columns of table "cartItem"
 """
 input cartItem_stddev_order_by {
-  price: order_by
   quantity: order_by
 }
 
 """aggregate stddev_pop on columns"""
 type cartItem_stddev_pop_fields {
-  price: Float
   quantity: Float
 }
 
@@ -306,13 +705,11 @@ type cartItem_stddev_pop_fields {
 order by stddev_pop() on columns of table "cartItem"
 """
 input cartItem_stddev_pop_order_by {
-  price: order_by
   quantity: order_by
 }
 
 """aggregate stddev_samp on columns"""
 type cartItem_stddev_samp_fields {
-  price: Float
   quantity: Float
 }
 
@@ -320,7 +717,6 @@ type cartItem_stddev_samp_fields {
 order by stddev_samp() on columns of table "cartItem"
 """
 input cartItem_stddev_samp_order_by {
-  price: order_by
   quantity: order_by
 }
 
@@ -338,16 +734,16 @@ input cartItem_stream_cursor_input {
 """Initial value of the column from where the streaming should start"""
 input cartItem_stream_cursor_value_input {
   addedUserId: String
+  cartId: uuid
+  created_at: timestamptz
   id: uuid
   menuId: uuid
-  name: String
-  price: Int
   quantity: Int
+  updated_at: timestamptz
 }
 
 """aggregate sum on columns"""
 type cartItem_sum_fields {
-  price: Int
   quantity: Int
 }
 
@@ -355,7 +751,6 @@ type cartItem_sum_fields {
 order by sum() on columns of table "cartItem"
 """
 input cartItem_sum_order_by {
-  price: order_by
   quantity: order_by
 }
 
@@ -367,19 +762,22 @@ enum cartItem_update_column {
   addedUserId
 
   """column name"""
+  cartId
+
+  """column name"""
+  created_at
+
+  """column name"""
   id
 
   """column name"""
   menuId
 
   """column name"""
-  name
-
-  """column name"""
-  price
-
-  """column name"""
   quantity
+
+  """column name"""
+  updated_at
 }
 
 input cartItem_updates {
@@ -395,7 +793,6 @@ input cartItem_updates {
 
 """aggregate var_pop on columns"""
 type cartItem_var_pop_fields {
-  price: Float
   quantity: Float
 }
 
@@ -403,13 +800,11 @@ type cartItem_var_pop_fields {
 order by var_pop() on columns of table "cartItem"
 """
 input cartItem_var_pop_order_by {
-  price: order_by
   quantity: order_by
 }
 
 """aggregate var_samp on columns"""
 type cartItem_var_samp_fields {
-  price: Float
   quantity: Float
 }
 
@@ -417,13 +812,11 @@ type cartItem_var_samp_fields {
 order by var_samp() on columns of table "cartItem"
 """
 input cartItem_var_samp_order_by {
-  price: order_by
   quantity: order_by
 }
 
 """aggregate variance on columns"""
 type cartItem_variance_fields {
-  price: Float
   quantity: Float
 }
 
@@ -431,7 +824,6 @@ type cartItem_variance_fields {
 order by variance() on columns of table "cartItem"
 """
 input cartItem_variance_order_by {
-  price: order_by
   quantity: order_by
 }
 
@@ -709,9 +1101,9 @@ type menu {
   name: String!
 
   """An array relationship"""
-  orders(
+  orderItems(
     """distinct select on columns"""
-    distinct_on: [order_select_column!]
+    distinct_on: [orderItem_select_column!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -720,16 +1112,16 @@ type menu {
     offset: Int
 
     """sort the rows by one or more columns"""
-    order_by: [order_order_by!]
+    order_by: [orderItem_order_by!]
 
     """filter the rows returned"""
-    where: order_bool_exp
-  ): [order!]!
+    where: orderItem_bool_exp
+  ): [orderItem!]!
 
   """An aggregate relationship"""
-  orders_aggregate(
+  orderItems_aggregate(
     """distinct select on columns"""
-    distinct_on: [order_select_column!]
+    distinct_on: [orderItem_select_column!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -738,11 +1130,11 @@ type menu {
     offset: Int
 
     """sort the rows by one or more columns"""
-    order_by: [order_order_by!]
+    order_by: [orderItem_order_by!]
 
     """filter the rows returned"""
-    where: order_bool_exp
-  ): order_aggregate!
+    where: orderItem_bool_exp
+  ): orderItem_aggregate!
   price: Int!
 }
 
@@ -835,8 +1227,8 @@ input menu_bool_exp {
   id: uuid_comparison_exp
   image: String_comparison_exp
   name: String_comparison_exp
-  orders: order_bool_exp
-  orders_aggregate: order_aggregate_bool_exp
+  orderItems: orderItem_bool_exp
+  orderItems_aggregate: orderItem_aggregate_bool_exp
   price: Int_comparison_exp
 }
 
@@ -867,7 +1259,7 @@ input menu_insert_input {
   id: uuid
   image: String
   name: String
-  orders: order_arr_rel_insert_input
+  orderItems: orderItem_arr_rel_insert_input
   price: Int
 }
 
@@ -949,7 +1341,7 @@ input menu_order_by {
   id: order_by
   image: order_by
   name: order_by
-  orders_aggregate: order_aggregate_order_by
+  orderItems_aggregate: orderItem_aggregate_order_by
   price: order_by
 }
 
@@ -1129,6 +1521,14 @@ type mutation_root {
   addMenuIntoCart(input: AddMenuIntoCartInput!): AddMenuIntoCartOutput
 
   """
+  delete data from the table: "cart"
+  """
+  delete_cart(
+    """filter the rows which have to be deleted"""
+    where: cart_bool_exp!
+  ): cart_mutation_response
+
+  """
   delete data from the table: "cartItem"
   """
   delete_cartItem(
@@ -1140,6 +1540,11 @@ type mutation_root {
   delete single row from the table: "cartItem"
   """
   delete_cartItem_by_pk(id: uuid!): cartItem
+
+  """
+  delete single row from the table: "cart"
+  """
+  delete_cart_by_pk(id: uuid!): cart
 
   """
   delete data from the table: "category"
@@ -1176,6 +1581,19 @@ type mutation_root {
   ): order_mutation_response
 
   """
+  delete data from the table: "orderItem"
+  """
+  delete_orderItem(
+    """filter the rows which have to be deleted"""
+    where: orderItem_bool_exp!
+  ): orderItem_mutation_response
+
+  """
+  delete single row from the table: "orderItem"
+  """
+  delete_orderItem_by_pk(id: uuid!): orderItem
+
+  """
   delete single row from the table: "order"
   """
   delete_order_by_pk(id: uuid!): order
@@ -1189,9 +1607,33 @@ type mutation_root {
   ): user_mutation_response
 
   """
+  delete data from the table: "userCart"
+  """
+  delete_userCart(
+    """filter the rows which have to be deleted"""
+    where: userCart_bool_exp!
+  ): userCart_mutation_response
+
+  """
+  delete single row from the table: "userCart"
+  """
+  delete_userCart_by_pk(id: uuid!): userCart
+
+  """
   delete single row from the table: "user"
   """
   delete_user_by_pk(id: String!): user
+
+  """
+  insert data into the table: "cart"
+  """
+  insert_cart(
+    """the rows to be inserted"""
+    objects: [cart_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: cart_on_conflict
+  ): cart_mutation_response
 
   """
   insert data into the table: "cartItem"
@@ -1214,6 +1656,17 @@ type mutation_root {
     """upsert condition"""
     on_conflict: cartItem_on_conflict
   ): cartItem
+
+  """
+  insert a single row into the table: "cart"
+  """
+  insert_cart_one(
+    """the row to be inserted"""
+    object: cart_insert_input!
+
+    """upsert condition"""
+    on_conflict: cart_on_conflict
+  ): cart
 
   """
   insert data into the table: "category"
@@ -1271,6 +1724,28 @@ type mutation_root {
   ): order_mutation_response
 
   """
+  insert data into the table: "orderItem"
+  """
+  insert_orderItem(
+    """the rows to be inserted"""
+    objects: [orderItem_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: orderItem_on_conflict
+  ): orderItem_mutation_response
+
+  """
+  insert a single row into the table: "orderItem"
+  """
+  insert_orderItem_one(
+    """the row to be inserted"""
+    object: orderItem_insert_input!
+
+    """upsert condition"""
+    on_conflict: orderItem_on_conflict
+  ): orderItem
+
+  """
   insert a single row into the table: "order"
   """
   insert_order_one(
@@ -1293,6 +1768,28 @@ type mutation_root {
   ): user_mutation_response
 
   """
+  insert data into the table: "userCart"
+  """
+  insert_userCart(
+    """the rows to be inserted"""
+    objects: [userCart_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: userCart_on_conflict
+  ): userCart_mutation_response
+
+  """
+  insert a single row into the table: "userCart"
+  """
+  insert_userCart_one(
+    """the row to be inserted"""
+    object: userCart_insert_input!
+
+    """upsert condition"""
+    on_conflict: userCart_on_conflict
+  ): userCart
+
+  """
   insert a single row into the table: "user"
   """
   insert_user_one(
@@ -1302,10 +1799,21 @@ type mutation_root {
     """upsert condition"""
     on_conflict: user_on_conflict
   ): user
-  orderCartItems: OrderCartItemsOutput
+  orderCartItems(input: OrderCartItemsInput!): OrderCartItemsOutput
   removeMenuFromCart(input: RemoveMenuFromCartInput!): RemoveMenuFromCartOutput
   signIn(input: SignInInput!): SignInOutput
   signUp(input: SignUpInput!): SignUpOutput
+
+  """
+  update data of the table: "cart"
+  """
+  update_cart(
+    """sets the columns of the filtered rows to the given values"""
+    _set: cart_set_input
+
+    """filter the rows which have to be updated"""
+    where: cart_bool_exp!
+  ): cart_mutation_response
 
   """
   update data of the table: "cartItem"
@@ -1340,6 +1848,23 @@ type mutation_root {
     """updates to execute, in order"""
     updates: [cartItem_updates!]!
   ): [cartItem_mutation_response]
+
+  """
+  update single row of the table: "cart"
+  """
+  update_cart_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: cart_set_input
+    pk_columns: cart_pk_columns_input!
+  ): cart
+
+  """
+  update multiples rows of table: "cart"
+  """
+  update_cart_many(
+    """updates to execute, in order"""
+    updates: [cart_updates!]!
+  ): [cart_mutation_response]
 
   """
   update data of the table: "category"
@@ -1418,6 +1943,40 @@ type mutation_root {
   ): order_mutation_response
 
   """
+  update data of the table: "orderItem"
+  """
+  update_orderItem(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: orderItem_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: orderItem_set_input
+
+    """filter the rows which have to be updated"""
+    where: orderItem_bool_exp!
+  ): orderItem_mutation_response
+
+  """
+  update single row of the table: "orderItem"
+  """
+  update_orderItem_by_pk(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: orderItem_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: orderItem_set_input
+    pk_columns: orderItem_pk_columns_input!
+  ): orderItem
+
+  """
+  update multiples rows of table: "orderItem"
+  """
+  update_orderItem_many(
+    """updates to execute, in order"""
+    updates: [orderItem_updates!]!
+  ): [orderItem_mutation_response]
+
+  """
   update single row of the table: "order"
   """
   update_order_by_pk(
@@ -1449,6 +2008,34 @@ type mutation_root {
   ): user_mutation_response
 
   """
+  update data of the table: "userCart"
+  """
+  update_userCart(
+    """sets the columns of the filtered rows to the given values"""
+    _set: userCart_set_input
+
+    """filter the rows which have to be updated"""
+    where: userCart_bool_exp!
+  ): userCart_mutation_response
+
+  """
+  update single row of the table: "userCart"
+  """
+  update_userCart_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: userCart_set_input
+    pk_columns: userCart_pk_columns_input!
+  ): userCart
+
+  """
+  update multiples rows of table: "userCart"
+  """
+  update_userCart_many(
+    """updates to execute, in order"""
+    updates: [userCart_updates!]!
+  ): [userCart_mutation_response]
+
+  """
   update single row of the table: "user"
   """
   update_user_by_pk(
@@ -1472,14 +2059,45 @@ columns and relationships of "order"
 type order {
   id: uuid!
 
-  """An object relationship"""
-  menu: menu!
-  menuId: uuid!
-  name: String!
-  orderedAt: timestamp!
+  """An array relationship"""
+  orderItems(
+    """distinct select on columns"""
+    distinct_on: [orderItem_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [orderItem_order_by!]
+
+    """filter the rows returned"""
+    where: orderItem_bool_exp
+  ): [orderItem!]!
+
+  """An aggregate relationship"""
+  orderItems_aggregate(
+    """distinct select on columns"""
+    distinct_on: [orderItem_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [orderItem_order_by!]
+
+    """filter the rows returned"""
+    where: orderItem_bool_exp
+  ): orderItem_aggregate!
+  orderedAt: timestamptz!
   orderedUserId: String!
-  price: Int!
-  quantity: Int!
+  totalPrice: Int!
+  updated_at: timestamptz
 
   """An object relationship"""
   user: user!
@@ -1550,16 +2168,14 @@ input order_arr_rel_insert_input {
 
 """aggregate avg on columns"""
 type order_avg_fields {
-  price: Float
-  quantity: Float
+  totalPrice: Float
 }
 
 """
 order by avg() on columns of table "order"
 """
 input order_avg_order_by {
-  price: order_by
-  quantity: order_by
+  totalPrice: order_by
 }
 
 """
@@ -1570,13 +2186,12 @@ input order_bool_exp {
   _not: order_bool_exp
   _or: [order_bool_exp!]
   id: uuid_comparison_exp
-  menu: menu_bool_exp
-  menuId: uuid_comparison_exp
-  name: String_comparison_exp
-  orderedAt: timestamp_comparison_exp
+  orderItems: orderItem_bool_exp
+  orderItems_aggregate: orderItem_aggregate_bool_exp
+  orderedAt: timestamptz_comparison_exp
   orderedUserId: String_comparison_exp
-  price: Int_comparison_exp
-  quantity: Int_comparison_exp
+  totalPrice: Int_comparison_exp
+  updated_at: timestamptz_comparison_exp
   user: user_bool_exp
 }
 
@@ -1615,8 +2230,7 @@ enum order_constraint {
 input type for incrementing numeric columns in table "order"
 """
 input order_inc_input {
-  price: Int
-  quantity: Int
+  totalPrice: Int
 }
 
 """
@@ -1624,25 +2238,21 @@ input type for inserting data into table "order"
 """
 input order_insert_input {
   id: uuid
-  menu: menu_obj_rel_insert_input
-  menuId: uuid
-  name: String
-  orderedAt: timestamp
+  orderItems: orderItem_arr_rel_insert_input
+  orderedAt: timestamptz
   orderedUserId: String
-  price: Int
-  quantity: Int
+  totalPrice: Int
+  updated_at: timestamptz
   user: user_obj_rel_insert_input
 }
 
 """aggregate max on columns"""
 type order_max_fields {
   id: uuid
-  menuId: uuid
-  name: String
-  orderedAt: timestamp
+  orderedAt: timestamptz
   orderedUserId: String
-  price: Int
-  quantity: Int
+  totalPrice: Int
+  updated_at: timestamptz
 }
 
 """
@@ -1650,23 +2260,19 @@ order by max() on columns of table "order"
 """
 input order_max_order_by {
   id: order_by
-  menuId: order_by
-  name: order_by
   orderedAt: order_by
   orderedUserId: order_by
-  price: order_by
-  quantity: order_by
+  totalPrice: order_by
+  updated_at: order_by
 }
 
 """aggregate min on columns"""
 type order_min_fields {
   id: uuid
-  menuId: uuid
-  name: String
-  orderedAt: timestamp
+  orderedAt: timestamptz
   orderedUserId: String
-  price: Int
-  quantity: Int
+  totalPrice: Int
+  updated_at: timestamptz
 }
 
 """
@@ -1674,12 +2280,10 @@ order by min() on columns of table "order"
 """
 input order_min_order_by {
   id: order_by
-  menuId: order_by
-  name: order_by
   orderedAt: order_by
   orderedUserId: order_by
-  price: order_by
-  quantity: order_by
+  totalPrice: order_by
+  updated_at: order_by
 }
 
 """
@@ -1694,6 +2298,16 @@ type order_mutation_response {
 }
 
 """
+input type for inserting object relation for remote table "order"
+"""
+input order_obj_rel_insert_input {
+  data: order_insert_input!
+
+  """upsert condition"""
+  on_conflict: order_on_conflict
+}
+
+"""
 on_conflict condition type for table "order"
 """
 input order_on_conflict {
@@ -1705,13 +2319,11 @@ input order_on_conflict {
 """Ordering options when selecting data from "order"."""
 input order_order_by {
   id: order_by
-  menu: menu_order_by
-  menuId: order_by
-  name: order_by
+  orderItems_aggregate: orderItem_aggregate_order_by
   orderedAt: order_by
   orderedUserId: order_by
-  price: order_by
-  quantity: order_by
+  totalPrice: order_by
+  updated_at: order_by
   user: user_order_by
 }
 
@@ -1728,22 +2340,16 @@ enum order_select_column {
   id
 
   """column name"""
-  menuId
-
-  """column name"""
-  name
-
-  """column name"""
   orderedAt
 
   """column name"""
   orderedUserId
 
   """column name"""
-  price
+  totalPrice
 
   """column name"""
-  quantity
+  updated_at
 }
 
 """
@@ -1751,54 +2357,46 @@ input type for updating data in table "order"
 """
 input order_set_input {
   id: uuid
-  menuId: uuid
-  name: String
-  orderedAt: timestamp
+  orderedAt: timestamptz
   orderedUserId: String
-  price: Int
-  quantity: Int
+  totalPrice: Int
+  updated_at: timestamptz
 }
 
 """aggregate stddev on columns"""
 type order_stddev_fields {
-  price: Float
-  quantity: Float
+  totalPrice: Float
 }
 
 """
 order by stddev() on columns of table "order"
 """
 input order_stddev_order_by {
-  price: order_by
-  quantity: order_by
+  totalPrice: order_by
 }
 
 """aggregate stddev_pop on columns"""
 type order_stddev_pop_fields {
-  price: Float
-  quantity: Float
+  totalPrice: Float
 }
 
 """
 order by stddev_pop() on columns of table "order"
 """
 input order_stddev_pop_order_by {
-  price: order_by
-  quantity: order_by
+  totalPrice: order_by
 }
 
 """aggregate stddev_samp on columns"""
 type order_stddev_samp_fields {
-  price: Float
-  quantity: Float
+  totalPrice: Float
 }
 
 """
 order by stddev_samp() on columns of table "order"
 """
 input order_stddev_samp_order_by {
-  price: order_by
-  quantity: order_by
+  totalPrice: order_by
 }
 
 """
@@ -1815,26 +2413,22 @@ input order_stream_cursor_input {
 """Initial value of the column from where the streaming should start"""
 input order_stream_cursor_value_input {
   id: uuid
-  menuId: uuid
-  name: String
-  orderedAt: timestamp
+  orderedAt: timestamptz
   orderedUserId: String
-  price: Int
-  quantity: Int
+  totalPrice: Int
+  updated_at: timestamptz
 }
 
 """aggregate sum on columns"""
 type order_sum_fields {
-  price: Int
-  quantity: Int
+  totalPrice: Int
 }
 
 """
 order by sum() on columns of table "order"
 """
 input order_sum_order_by {
-  price: order_by
-  quantity: order_by
+  totalPrice: order_by
 }
 
 """
@@ -1845,22 +2439,16 @@ enum order_update_column {
   id
 
   """column name"""
-  menuId
-
-  """column name"""
-  name
-
-  """column name"""
   orderedAt
 
   """column name"""
   orderedUserId
 
   """column name"""
-  price
+  totalPrice
 
   """column name"""
-  quantity
+  updated_at
 }
 
 input order_updates {
@@ -1876,51 +2464,465 @@ input order_updates {
 
 """aggregate var_pop on columns"""
 type order_var_pop_fields {
-  price: Float
-  quantity: Float
+  totalPrice: Float
 }
 
 """
 order by var_pop() on columns of table "order"
 """
 input order_var_pop_order_by {
-  price: order_by
-  quantity: order_by
+  totalPrice: order_by
 }
 
 """aggregate var_samp on columns"""
 type order_var_samp_fields {
-  price: Float
-  quantity: Float
+  totalPrice: Float
 }
 
 """
 order by var_samp() on columns of table "order"
 """
 input order_var_samp_order_by {
-  price: order_by
-  quantity: order_by
+  totalPrice: order_by
 }
 
 """aggregate variance on columns"""
 type order_variance_fields {
-  price: Float
-  quantity: Float
+  totalPrice: Float
 }
 
 """
 order by variance() on columns of table "order"
 """
 input order_variance_order_by {
-  price: order_by
-  quantity: order_by
+  totalPrice: order_by
+}
+
+input OrderCartItemsInput {
+  cartId: uuid!
 }
 
 type OrderCartItemsOutput {
   success: Boolean!
 }
 
+"""
+columns and relationships of "orderItem"
+"""
+type orderItem {
+  created_at: timestamptz!
+  id: uuid!
+
+  """An object relationship"""
+  menu: menu!
+  menuId: uuid!
+
+  """An object relationship"""
+  order: order!
+  orderId: uuid!
+  quantity: Int!
+  updated_at: timestamptz!
+}
+
+"""
+aggregated selection of "orderItem"
+"""
+type orderItem_aggregate {
+  aggregate: orderItem_aggregate_fields
+  nodes: [orderItem!]!
+}
+
+input orderItem_aggregate_bool_exp {
+  count: orderItem_aggregate_bool_exp_count
+}
+
+input orderItem_aggregate_bool_exp_count {
+  arguments: [orderItem_select_column!]
+  distinct: Boolean
+  filter: orderItem_bool_exp
+  predicate: Int_comparison_exp!
+}
+
+"""
+aggregate fields of "orderItem"
+"""
+type orderItem_aggregate_fields {
+  avg: orderItem_avg_fields
+  count(columns: [orderItem_select_column!], distinct: Boolean): Int!
+  max: orderItem_max_fields
+  min: orderItem_min_fields
+  stddev: orderItem_stddev_fields
+  stddev_pop: orderItem_stddev_pop_fields
+  stddev_samp: orderItem_stddev_samp_fields
+  sum: orderItem_sum_fields
+  var_pop: orderItem_var_pop_fields
+  var_samp: orderItem_var_samp_fields
+  variance: orderItem_variance_fields
+}
+
+"""
+order by aggregate values of table "orderItem"
+"""
+input orderItem_aggregate_order_by {
+  avg: orderItem_avg_order_by
+  count: order_by
+  max: orderItem_max_order_by
+  min: orderItem_min_order_by
+  stddev: orderItem_stddev_order_by
+  stddev_pop: orderItem_stddev_pop_order_by
+  stddev_samp: orderItem_stddev_samp_order_by
+  sum: orderItem_sum_order_by
+  var_pop: orderItem_var_pop_order_by
+  var_samp: orderItem_var_samp_order_by
+  variance: orderItem_variance_order_by
+}
+
+"""
+input type for inserting array relation for remote table "orderItem"
+"""
+input orderItem_arr_rel_insert_input {
+  data: [orderItem_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: orderItem_on_conflict
+}
+
+"""aggregate avg on columns"""
+type orderItem_avg_fields {
+  quantity: Float
+}
+
+"""
+order by avg() on columns of table "orderItem"
+"""
+input orderItem_avg_order_by {
+  quantity: order_by
+}
+
+"""
+Boolean expression to filter rows from the table "orderItem". All fields are combined with a logical 'AND'.
+"""
+input orderItem_bool_exp {
+  _and: [orderItem_bool_exp!]
+  _not: orderItem_bool_exp
+  _or: [orderItem_bool_exp!]
+  created_at: timestamptz_comparison_exp
+  id: uuid_comparison_exp
+  menu: menu_bool_exp
+  menuId: uuid_comparison_exp
+  order: order_bool_exp
+  orderId: uuid_comparison_exp
+  quantity: Int_comparison_exp
+  updated_at: timestamptz_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "orderItem"
+"""
+enum orderItem_constraint {
+  """
+  unique or primary key constraint on columns "id"
+  """
+  orderItem_pkey
+}
+
+"""
+input type for incrementing numeric columns in table "orderItem"
+"""
+input orderItem_inc_input {
+  quantity: Int
+}
+
+"""
+input type for inserting data into table "orderItem"
+"""
+input orderItem_insert_input {
+  created_at: timestamptz
+  id: uuid
+  menu: menu_obj_rel_insert_input
+  menuId: uuid
+  order: order_obj_rel_insert_input
+  orderId: uuid
+  quantity: Int
+  updated_at: timestamptz
+}
+
+"""aggregate max on columns"""
+type orderItem_max_fields {
+  created_at: timestamptz
+  id: uuid
+  menuId: uuid
+  orderId: uuid
+  quantity: Int
+  updated_at: timestamptz
+}
+
+"""
+order by max() on columns of table "orderItem"
+"""
+input orderItem_max_order_by {
+  created_at: order_by
+  id: order_by
+  menuId: order_by
+  orderId: order_by
+  quantity: order_by
+  updated_at: order_by
+}
+
+"""aggregate min on columns"""
+type orderItem_min_fields {
+  created_at: timestamptz
+  id: uuid
+  menuId: uuid
+  orderId: uuid
+  quantity: Int
+  updated_at: timestamptz
+}
+
+"""
+order by min() on columns of table "orderItem"
+"""
+input orderItem_min_order_by {
+  created_at: order_by
+  id: order_by
+  menuId: order_by
+  orderId: order_by
+  quantity: order_by
+  updated_at: order_by
+}
+
+"""
+response of any mutation on the table "orderItem"
+"""
+type orderItem_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [orderItem!]!
+}
+
+"""
+on_conflict condition type for table "orderItem"
+"""
+input orderItem_on_conflict {
+  constraint: orderItem_constraint!
+  update_columns: [orderItem_update_column!]! = []
+  where: orderItem_bool_exp
+}
+
+"""Ordering options when selecting data from "orderItem"."""
+input orderItem_order_by {
+  created_at: order_by
+  id: order_by
+  menu: menu_order_by
+  menuId: order_by
+  order: order_order_by
+  orderId: order_by
+  quantity: order_by
+  updated_at: order_by
+}
+
+"""primary key columns input for table: orderItem"""
+input orderItem_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "orderItem"
+"""
+enum orderItem_select_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  menuId
+
+  """column name"""
+  orderId
+
+  """column name"""
+  quantity
+
+  """column name"""
+  updated_at
+}
+
+"""
+input type for updating data in table "orderItem"
+"""
+input orderItem_set_input {
+  created_at: timestamptz
+  id: uuid
+  menuId: uuid
+  orderId: uuid
+  quantity: Int
+  updated_at: timestamptz
+}
+
+"""aggregate stddev on columns"""
+type orderItem_stddev_fields {
+  quantity: Float
+}
+
+"""
+order by stddev() on columns of table "orderItem"
+"""
+input orderItem_stddev_order_by {
+  quantity: order_by
+}
+
+"""aggregate stddev_pop on columns"""
+type orderItem_stddev_pop_fields {
+  quantity: Float
+}
+
+"""
+order by stddev_pop() on columns of table "orderItem"
+"""
+input orderItem_stddev_pop_order_by {
+  quantity: order_by
+}
+
+"""aggregate stddev_samp on columns"""
+type orderItem_stddev_samp_fields {
+  quantity: Float
+}
+
+"""
+order by stddev_samp() on columns of table "orderItem"
+"""
+input orderItem_stddev_samp_order_by {
+  quantity: order_by
+}
+
+"""
+Streaming cursor of the table "orderItem"
+"""
+input orderItem_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: orderItem_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input orderItem_stream_cursor_value_input {
+  created_at: timestamptz
+  id: uuid
+  menuId: uuid
+  orderId: uuid
+  quantity: Int
+  updated_at: timestamptz
+}
+
+"""aggregate sum on columns"""
+type orderItem_sum_fields {
+  quantity: Int
+}
+
+"""
+order by sum() on columns of table "orderItem"
+"""
+input orderItem_sum_order_by {
+  quantity: order_by
+}
+
+"""
+update columns of table "orderItem"
+"""
+enum orderItem_update_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  menuId
+
+  """column name"""
+  orderId
+
+  """column name"""
+  quantity
+
+  """column name"""
+  updated_at
+}
+
+input orderItem_updates {
+  """increments the numeric columns with given value of the filtered values"""
+  _inc: orderItem_inc_input
+
+  """sets the columns of the filtered rows to the given values"""
+  _set: orderItem_set_input
+
+  """filter the rows which have to be updated"""
+  where: orderItem_bool_exp!
+}
+
+"""aggregate var_pop on columns"""
+type orderItem_var_pop_fields {
+  quantity: Float
+}
+
+"""
+order by var_pop() on columns of table "orderItem"
+"""
+input orderItem_var_pop_order_by {
+  quantity: order_by
+}
+
+"""aggregate var_samp on columns"""
+type orderItem_var_samp_fields {
+  quantity: Float
+}
+
+"""
+order by var_samp() on columns of table "orderItem"
+"""
+input orderItem_var_samp_order_by {
+  quantity: order_by
+}
+
+"""aggregate variance on columns"""
+type orderItem_variance_fields {
+  quantity: Float
+}
+
+"""
+order by variance() on columns of table "orderItem"
+"""
+input orderItem_variance_order_by {
+  quantity: order_by
+}
+
 type query_root {
+  """
+  fetch data from the table: "cart"
+  """
+  cart(
+    """distinct select on columns"""
+    distinct_on: [cart_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [cart_order_by!]
+
+    """filter the rows returned"""
+    where: cart_bool_exp
+  ): [cart!]!
+
   """
   fetch data from the table: "cartItem"
   """
@@ -1963,6 +2965,29 @@ type query_root {
 
   """fetch data from the table: "cartItem" using primary key columns"""
   cartItem_by_pk(id: uuid!): cartItem
+
+  """
+  fetch aggregated fields from the table: "cart"
+  """
+  cart_aggregate(
+    """distinct select on columns"""
+    distinct_on: [cart_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [cart_order_by!]
+
+    """filter the rows returned"""
+    where: cart_bool_exp
+  ): cart_aggregate!
+
+  """fetch data from the table: "cart" using primary key columns"""
+  cart_by_pk(id: uuid!): cart
 
   """
   fetch data from the table: "category"
@@ -2071,6 +3096,49 @@ type query_root {
   ): [order!]!
 
   """
+  fetch data from the table: "orderItem"
+  """
+  orderItem(
+    """distinct select on columns"""
+    distinct_on: [orderItem_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [orderItem_order_by!]
+
+    """filter the rows returned"""
+    where: orderItem_bool_exp
+  ): [orderItem!]!
+
+  """
+  fetch aggregated fields from the table: "orderItem"
+  """
+  orderItem_aggregate(
+    """distinct select on columns"""
+    distinct_on: [orderItem_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [orderItem_order_by!]
+
+    """filter the rows returned"""
+    where: orderItem_bool_exp
+  ): orderItem_aggregate!
+
+  """fetch data from the table: "orderItem" using primary key columns"""
+  orderItem_by_pk(id: uuid!): orderItem
+
+  """
   fetch aggregated fields from the table: "order"
   """
   order_aggregate(
@@ -2114,6 +3182,49 @@ type query_root {
   ): [user!]!
 
   """
+  fetch data from the table: "userCart"
+  """
+  userCart(
+    """distinct select on columns"""
+    distinct_on: [userCart_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [userCart_order_by!]
+
+    """filter the rows returned"""
+    where: userCart_bool_exp
+  ): [userCart!]!
+
+  """
+  fetch aggregated fields from the table: "userCart"
+  """
+  userCart_aggregate(
+    """distinct select on columns"""
+    distinct_on: [userCart_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [userCart_order_by!]
+
+    """filter the rows returned"""
+    where: userCart_bool_exp
+  ): userCart_aggregate!
+
+  """fetch data from the table: "userCart" using primary key columns"""
+  userCart_by_pk(id: uuid!): userCart
+
+  """
   fetch aggregated fields from the table: "user"
   """
   user_aggregate(
@@ -2138,6 +3249,7 @@ type query_root {
 }
 
 input RemoveMenuFromCartInput {
+  cartId: uuid!
   menuId: uuid!
   quantity: Int!
 }
@@ -2154,9 +3266,11 @@ input SignInInput {
 type SignInOutput {
   id: String!
   token: String!
+  usingCartId: uuid!
 }
 
 input SignUpInput {
+  cartName: String!
   id: String!
   name: String!
   password: String!
@@ -2165,6 +3279,7 @@ input SignUpInput {
 type SignUpOutput {
   id: String!
   token: String!
+  usingCartId: uuid!
 }
 
 """
@@ -2222,6 +3337,26 @@ input String_comparison_exp {
 
 type subscription_root {
   """
+  fetch data from the table: "cart"
+  """
+  cart(
+    """distinct select on columns"""
+    distinct_on: [cart_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [cart_order_by!]
+
+    """filter the rows returned"""
+    where: cart_bool_exp
+  ): [cart!]!
+
+  """
   fetch data from the table: "cartItem"
   """
   cartItem(
@@ -2277,6 +3412,43 @@ type subscription_root {
     """filter the rows returned"""
     where: cartItem_bool_exp
   ): [cartItem!]!
+
+  """
+  fetch aggregated fields from the table: "cart"
+  """
+  cart_aggregate(
+    """distinct select on columns"""
+    distinct_on: [cart_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [cart_order_by!]
+
+    """filter the rows returned"""
+    where: cart_bool_exp
+  ): cart_aggregate!
+
+  """fetch data from the table: "cart" using primary key columns"""
+  cart_by_pk(id: uuid!): cart
+
+  """
+  fetch data from the table in a streaming manner: "cart"
+  """
+  cart_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [cart_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: cart_bool_exp
+  ): [cart!]!
 
   """
   fetch data from the table: "category"
@@ -2413,6 +3585,63 @@ type subscription_root {
   ): [order!]!
 
   """
+  fetch data from the table: "orderItem"
+  """
+  orderItem(
+    """distinct select on columns"""
+    distinct_on: [orderItem_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [orderItem_order_by!]
+
+    """filter the rows returned"""
+    where: orderItem_bool_exp
+  ): [orderItem!]!
+
+  """
+  fetch aggregated fields from the table: "orderItem"
+  """
+  orderItem_aggregate(
+    """distinct select on columns"""
+    distinct_on: [orderItem_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [orderItem_order_by!]
+
+    """filter the rows returned"""
+    where: orderItem_bool_exp
+  ): orderItem_aggregate!
+
+  """fetch data from the table: "orderItem" using primary key columns"""
+  orderItem_by_pk(id: uuid!): orderItem
+
+  """
+  fetch data from the table in a streaming manner: "orderItem"
+  """
+  orderItem_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [orderItem_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: orderItem_bool_exp
+  ): [orderItem!]!
+
+  """
   fetch aggregated fields from the table: "order"
   """
   order_aggregate(
@@ -2470,6 +3699,63 @@ type subscription_root {
   ): [user!]!
 
   """
+  fetch data from the table: "userCart"
+  """
+  userCart(
+    """distinct select on columns"""
+    distinct_on: [userCart_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [userCart_order_by!]
+
+    """filter the rows returned"""
+    where: userCart_bool_exp
+  ): [userCart!]!
+
+  """
+  fetch aggregated fields from the table: "userCart"
+  """
+  userCart_aggregate(
+    """distinct select on columns"""
+    distinct_on: [userCart_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [userCart_order_by!]
+
+    """filter the rows returned"""
+    where: userCart_bool_exp
+  ): userCart_aggregate!
+
+  """fetch data from the table: "userCart" using primary key columns"""
+  userCart_by_pk(id: uuid!): userCart
+
+  """
+  fetch data from the table in a streaming manner: "userCart"
+  """
+  userCart_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [userCart_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: userCart_bool_exp
+  ): [userCart!]!
+
+  """
   fetch aggregated fields from the table: "user"
   """
   user_aggregate(
@@ -2507,27 +3793,30 @@ type subscription_root {
   ): [user!]!
 }
 
-scalar timestamp
+scalar timestamptz
 
 """
-Boolean expression to compare columns of type "timestamp". All fields are combined with logical 'AND'.
+Boolean expression to compare columns of type "timestamptz". All fields are combined with logical 'AND'.
 """
-input timestamp_comparison_exp {
-  _eq: timestamp
-  _gt: timestamp
-  _gte: timestamp
-  _in: [timestamp!]
+input timestamptz_comparison_exp {
+  _eq: timestamptz
+  _gt: timestamptz
+  _gte: timestamptz
+  _in: [timestamptz!]
   _is_null: Boolean
-  _lt: timestamp
-  _lte: timestamp
-  _neq: timestamp
-  _nin: [timestamp!]
+  _lt: timestamptz
+  _lte: timestamptz
+  _neq: timestamptz
+  _nin: [timestamptz!]
 }
 
 """
 columns and relationships of "user"
 """
 type user {
+  """An object relationship"""
+  cart: cart
+
   """An array relationship"""
   cartItems(
     """distinct select on columns"""
@@ -2563,9 +3852,120 @@ type user {
     """filter the rows returned"""
     where: cartItem_bool_exp
   ): cartItem_aggregate!
+
+  """An array relationship"""
+  carts(
+    """distinct select on columns"""
+    distinct_on: [cart_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [cart_order_by!]
+
+    """filter the rows returned"""
+    where: cart_bool_exp
+  ): [cart!]!
+
+  """An aggregate relationship"""
+  carts_aggregate(
+    """distinct select on columns"""
+    distinct_on: [cart_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [cart_order_by!]
+
+    """filter the rows returned"""
+    where: cart_bool_exp
+  ): cart_aggregate!
+  created_at: timestamptz
   id: String!
   name: String!
+
+  """An array relationship"""
+  orders(
+    """distinct select on columns"""
+    distinct_on: [order_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [order_order_by!]
+
+    """filter the rows returned"""
+    where: order_bool_exp
+  ): [order!]!
+
+  """An aggregate relationship"""
+  orders_aggregate(
+    """distinct select on columns"""
+    distinct_on: [order_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [order_order_by!]
+
+    """filter the rows returned"""
+    where: order_bool_exp
+  ): order_aggregate!
   password: String!
+  updated_at: timestamptz
+
+  """An array relationship"""
+  userCarts(
+    """distinct select on columns"""
+    distinct_on: [userCart_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [userCart_order_by!]
+
+    """filter the rows returned"""
+    where: userCart_bool_exp
+  ): [userCart!]!
+
+  """An aggregate relationship"""
+  userCarts_aggregate(
+    """distinct select on columns"""
+    distinct_on: [userCart_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [userCart_order_by!]
+
+    """filter the rows returned"""
+    where: userCart_bool_exp
+  ): userCart_aggregate!
+  usingCartId: uuid
 }
 
 """
@@ -2574,6 +3974,17 @@ aggregated selection of "user"
 type user_aggregate {
   aggregate: user_aggregate_fields
   nodes: [user!]!
+}
+
+input user_aggregate_bool_exp {
+  count: user_aggregate_bool_exp_count
+}
+
+input user_aggregate_bool_exp_count {
+  arguments: [user_select_column!]
+  distinct: Boolean
+  filter: user_bool_exp
+  predicate: Int_comparison_exp!
 }
 
 """
@@ -2586,17 +3997,46 @@ type user_aggregate_fields {
 }
 
 """
+order by aggregate values of table "user"
+"""
+input user_aggregate_order_by {
+  count: order_by
+  max: user_max_order_by
+  min: user_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "user"
+"""
+input user_arr_rel_insert_input {
+  data: [user_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: user_on_conflict
+}
+
+"""
 Boolean expression to filter rows from the table "user". All fields are combined with a logical 'AND'.
 """
 input user_bool_exp {
   _and: [user_bool_exp!]
   _not: user_bool_exp
   _or: [user_bool_exp!]
+  cart: cart_bool_exp
   cartItems: cartItem_bool_exp
   cartItems_aggregate: cartItem_aggregate_bool_exp
+  carts: cart_bool_exp
+  carts_aggregate: cart_aggregate_bool_exp
+  created_at: timestamptz_comparison_exp
   id: String_comparison_exp
   name: String_comparison_exp
+  orders: order_bool_exp
+  orders_aggregate: order_aggregate_bool_exp
   password: String_comparison_exp
+  updated_at: timestamptz_comparison_exp
+  userCarts: userCart_bool_exp
+  userCarts_aggregate: userCart_aggregate_bool_exp
+  usingCartId: uuid_comparison_exp
 }
 
 """
@@ -2613,24 +4053,61 @@ enum user_constraint {
 input type for inserting data into table "user"
 """
 input user_insert_input {
+  cart: cart_obj_rel_insert_input
   cartItems: cartItem_arr_rel_insert_input
+  carts: cart_arr_rel_insert_input
+  created_at: timestamptz
   id: String
   name: String
+  orders: order_arr_rel_insert_input
   password: String
+  updated_at: timestamptz
+  userCarts: userCart_arr_rel_insert_input
+  usingCartId: uuid
 }
 
 """aggregate max on columns"""
 type user_max_fields {
+  created_at: timestamptz
   id: String
   name: String
   password: String
+  updated_at: timestamptz
+  usingCartId: uuid
+}
+
+"""
+order by max() on columns of table "user"
+"""
+input user_max_order_by {
+  created_at: order_by
+  id: order_by
+  name: order_by
+  password: order_by
+  updated_at: order_by
+  usingCartId: order_by
 }
 
 """aggregate min on columns"""
 type user_min_fields {
+  created_at: timestamptz
   id: String
   name: String
   password: String
+  updated_at: timestamptz
+  usingCartId: uuid
+}
+
+"""
+order by min() on columns of table "user"
+"""
+input user_min_order_by {
+  created_at: order_by
+  id: order_by
+  name: order_by
+  password: order_by
+  updated_at: order_by
+  usingCartId: order_by
 }
 
 """
@@ -2665,10 +4142,17 @@ input user_on_conflict {
 
 """Ordering options when selecting data from "user"."""
 input user_order_by {
+  cart: cart_order_by
   cartItems_aggregate: cartItem_aggregate_order_by
+  carts_aggregate: cart_aggregate_order_by
+  created_at: order_by
   id: order_by
   name: order_by
+  orders_aggregate: order_aggregate_order_by
   password: order_by
+  updated_at: order_by
+  userCarts_aggregate: userCart_aggregate_order_by
+  usingCartId: order_by
 }
 
 """primary key columns input for table: user"""
@@ -2681,6 +4165,9 @@ select columns of table "user"
 """
 enum user_select_column {
   """column name"""
+  created_at
+
+  """column name"""
   id
 
   """column name"""
@@ -2688,15 +4175,24 @@ enum user_select_column {
 
   """column name"""
   password
+
+  """column name"""
+  updated_at
+
+  """column name"""
+  usingCartId
 }
 
 """
 input type for updating data in table "user"
 """
 input user_set_input {
+  created_at: timestamptz
   id: String
   name: String
   password: String
+  updated_at: timestamptz
+  usingCartId: uuid
 }
 
 """
@@ -2712,15 +4208,21 @@ input user_stream_cursor_input {
 
 """Initial value of the column from where the streaming should start"""
 input user_stream_cursor_value_input {
+  created_at: timestamptz
   id: String
   name: String
   password: String
+  updated_at: timestamptz
+  usingCartId: uuid
 }
 
 """
 update columns of table "user"
 """
 enum user_update_column {
+  """column name"""
+  created_at
+
   """column name"""
   id
 
@@ -2729,6 +4231,12 @@ enum user_update_column {
 
   """column name"""
   password
+
+  """column name"""
+  updated_at
+
+  """column name"""
+  usingCartId
 }
 
 input user_updates {
@@ -2737,6 +4245,263 @@ input user_updates {
 
   """filter the rows which have to be updated"""
   where: user_bool_exp!
+}
+
+"""
+columns and relationships of "userCart"
+"""
+type userCart {
+  """An object relationship"""
+  cart: cart!
+  cartId: uuid!
+  created_at: timestamptz!
+  id: uuid!
+  updated_at: timestamptz
+
+  """An object relationship"""
+  user: user!
+  userId: String!
+}
+
+"""
+aggregated selection of "userCart"
+"""
+type userCart_aggregate {
+  aggregate: userCart_aggregate_fields
+  nodes: [userCart!]!
+}
+
+input userCart_aggregate_bool_exp {
+  count: userCart_aggregate_bool_exp_count
+}
+
+input userCart_aggregate_bool_exp_count {
+  arguments: [userCart_select_column!]
+  distinct: Boolean
+  filter: userCart_bool_exp
+  predicate: Int_comparison_exp!
+}
+
+"""
+aggregate fields of "userCart"
+"""
+type userCart_aggregate_fields {
+  count(columns: [userCart_select_column!], distinct: Boolean): Int!
+  max: userCart_max_fields
+  min: userCart_min_fields
+}
+
+"""
+order by aggregate values of table "userCart"
+"""
+input userCart_aggregate_order_by {
+  count: order_by
+  max: userCart_max_order_by
+  min: userCart_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "userCart"
+"""
+input userCart_arr_rel_insert_input {
+  data: [userCart_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: userCart_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "userCart". All fields are combined with a logical 'AND'.
+"""
+input userCart_bool_exp {
+  _and: [userCart_bool_exp!]
+  _not: userCart_bool_exp
+  _or: [userCart_bool_exp!]
+  cart: cart_bool_exp
+  cartId: uuid_comparison_exp
+  created_at: timestamptz_comparison_exp
+  id: uuid_comparison_exp
+  updated_at: timestamptz_comparison_exp
+  user: user_bool_exp
+  userId: String_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "userCart"
+"""
+enum userCart_constraint {
+  """
+  unique or primary key constraint on columns "id"
+  """
+  userCart_pkey
+}
+
+"""
+input type for inserting data into table "userCart"
+"""
+input userCart_insert_input {
+  cart: cart_obj_rel_insert_input
+  cartId: uuid
+  created_at: timestamptz
+  id: uuid
+  updated_at: timestamptz
+  user: user_obj_rel_insert_input
+  userId: String
+}
+
+"""aggregate max on columns"""
+type userCart_max_fields {
+  cartId: uuid
+  created_at: timestamptz
+  id: uuid
+  updated_at: timestamptz
+  userId: String
+}
+
+"""
+order by max() on columns of table "userCart"
+"""
+input userCart_max_order_by {
+  cartId: order_by
+  created_at: order_by
+  id: order_by
+  updated_at: order_by
+  userId: order_by
+}
+
+"""aggregate min on columns"""
+type userCart_min_fields {
+  cartId: uuid
+  created_at: timestamptz
+  id: uuid
+  updated_at: timestamptz
+  userId: String
+}
+
+"""
+order by min() on columns of table "userCart"
+"""
+input userCart_min_order_by {
+  cartId: order_by
+  created_at: order_by
+  id: order_by
+  updated_at: order_by
+  userId: order_by
+}
+
+"""
+response of any mutation on the table "userCart"
+"""
+type userCart_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [userCart!]!
+}
+
+"""
+on_conflict condition type for table "userCart"
+"""
+input userCart_on_conflict {
+  constraint: userCart_constraint!
+  update_columns: [userCart_update_column!]! = []
+  where: userCart_bool_exp
+}
+
+"""Ordering options when selecting data from "userCart"."""
+input userCart_order_by {
+  cart: cart_order_by
+  cartId: order_by
+  created_at: order_by
+  id: order_by
+  updated_at: order_by
+  user: user_order_by
+  userId: order_by
+}
+
+"""primary key columns input for table: userCart"""
+input userCart_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "userCart"
+"""
+enum userCart_select_column {
+  """column name"""
+  cartId
+
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  updated_at
+
+  """column name"""
+  userId
+}
+
+"""
+input type for updating data in table "userCart"
+"""
+input userCart_set_input {
+  cartId: uuid
+  created_at: timestamptz
+  id: uuid
+  updated_at: timestamptz
+  userId: String
+}
+
+"""
+Streaming cursor of the table "userCart"
+"""
+input userCart_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: userCart_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input userCart_stream_cursor_value_input {
+  cartId: uuid
+  created_at: timestamptz
+  id: uuid
+  updated_at: timestamptz
+  userId: String
+}
+
+"""
+update columns of table "userCart"
+"""
+enum userCart_update_column {
+  """column name"""
+  cartId
+
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  updated_at
+
+  """column name"""
+  userId
+}
+
+input userCart_updates {
+  """sets the columns of the filtered rows to the given values"""
+  _set: userCart_set_input
+
+  """filter the rows which have to be updated"""
+  where: userCart_bool_exp!
 }
 
 scalar uuid

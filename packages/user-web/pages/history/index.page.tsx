@@ -1,17 +1,19 @@
+import { useAuth } from "hooks/useAuth";
+import { useCartItems } from "hooks/useCartItems";
 import { useOrders } from "hooks/useOrders";
 import { useRouter } from "next/dist/client/router";
 import Head from "next/head";
 import { Header } from "pages/cart/Header";
 import { useCartOrderCartItemsMutation } from "pages/cart/queries";
-import React, { useCallback } from "react";
-import { OrderList } from "./OrderList";
-import { useCartItems } from "hooks/useCartItems";
-import { useIndexAddMenuIntoCartMutation, useIndexRemoveMenuFromCartMutation } from "pages/index/queries";
 import { Fab } from "pages/index/Fab";
+import { useAddMenuIntoCartMutation, useRemoveMenuFromCartMutation } from "pages/index/queries";
+import { useCallback } from "react";
+import { OrderList } from "./OrderList";
 
 const History = () => {
-  const { orders } = useOrders();
-  const { cartItems } = useCartItems();
+  const { userId, usingCartId } = useAuth();
+  const { orders } = useOrders(userId);
+  const { cartItems } = useCartItems(usingCartId);
 
   const router = useRouter();
   const [orderCartItems] = useCartOrderCartItemsMutation();
@@ -21,13 +23,27 @@ const History = () => {
     await router.back();
   }, [orderCartItems, router]);
 
-  const [addMenuIntoCart] = useIndexAddMenuIntoCartMutation();
+  const [addMenuIntoCart] = useAddMenuIntoCartMutation();
 
-  const [removeMenuFromCart] = useIndexRemoveMenuFromCartMutation();
+  const [removeMenuFromCart] = useRemoveMenuFromCartMutation();
 
-  const onAdd = useCallback((menuId: string) => addMenuIntoCart({ variables: { input: { menuId, quantity: 1 } } }), [addMenuIntoCart]);
+  const onAdd = useCallback(
+    (menuId: string) => {
+      if (usingCartId) {
+        addMenuIntoCart({ variables: { input: { menuId, quantity: 1, cartId: usingCartId } } });
+      }
+    },
+    [addMenuIntoCart, usingCartId],
+  );
 
-  const onRemove = useCallback((menuId: string) => removeMenuFromCart({ variables: { input: { menuId, quantity: 1 } } }), [removeMenuFromCart]);
+  const onRemove = useCallback(
+    (menuId: string) => {
+      if (usingCartId) {
+        removeMenuFromCart({ variables: { input: { menuId, quantity: 1, cartId: usingCartId } } });
+      }
+    },
+    [removeMenuFromCart, usingCartId],
+  );
 
   return (
     <>

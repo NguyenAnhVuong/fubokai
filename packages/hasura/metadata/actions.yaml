@@ -58,6 +58,7 @@ custom_types:
   - name: AddMenuIntoCartInput
   - name: AddMenuIntoInput
   - name: RemoveMenuFromCartInput
+  - name: OrderCartItemsInput
   objects:
   - name: SignUpOutput
   - name: SignInOutput

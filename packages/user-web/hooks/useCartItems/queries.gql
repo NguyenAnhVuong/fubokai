@@ -1,11 +1,11 @@
-subscription CartItems {
-  cartItem {
+subscription CartItems($cartId: uuid) {
+  cartItem(where: { cartId: { _eq: $cartId } }) {
     id
     menuId
-    name
-    price
     quantity
     menu {
+      name
+      price
       image
     }
     user {
