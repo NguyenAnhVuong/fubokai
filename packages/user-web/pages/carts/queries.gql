@@ -1,6 +1,6 @@
-mutation AddCart($name: String, $creatorId: String) {
-  insert_cart_one(object: { name: $name, creatorId: $creatorId }) {
-    id
+mutation CreateCart($input: CreateCartInput!) {
+  createCart(input: $input) {
+    success
   }
 }
 
@@ -10,10 +10,23 @@ mutation AddUserCart($userId: String, $cartId: uuid) {
   }
 }
 
-query GetCarts($userId: String) {
+subscription GetCarts($userId: String) {
   cart(where: { userCarts: { userId: { _eq: $userId } } }) {
     id
     name
     creatorId
+  }
+}
+
+mutation UseCart($userId: String!, $cartId: uuid!) {
+  update_user(where: { id: { _eq: $userId } }, _set: { usingCartId: $cartId }) {
+    affected_rows
+  }
+}
+
+query GetUsers($keyword: String, $notId: String) {
+  user(where: { id: { _like: $keyword, _neq: $notId } }) {
+    name
+    id
   }
 }

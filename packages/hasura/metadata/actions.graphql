@@ -6,6 +6,13 @@ type Mutation {
 
 
 type Mutation {
+  createCart (
+    input: CreateCartInput!
+  ): CreateCartOutput
+}
+
+
+type Mutation {
   orderCartItems (
     input: OrderCartItemsInput!
   ): OrderCartItemsOutput
@@ -73,6 +80,10 @@ input OrderCartItemsInput {
   cartId : uuid!
 }
 
+input CreateCartInput {
+  name : String!
+}
+
 type SignUpOutput {
   id : String!
   token : String!
@@ -102,6 +113,10 @@ type RemoveMenuFromCartOutput {
 }
 
 type OrderCartItemsOutput {
+  success : Boolean!
+}
+
+type CreateCartOutput {
   success : Boolean!
 }
 

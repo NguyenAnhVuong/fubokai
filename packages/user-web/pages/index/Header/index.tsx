@@ -50,15 +50,15 @@ export const Header = ({ setKeyWord }: Props) => {
   return (
     <Container>
       {/* <HistoryButton onClick={() => router.push("/history")}>履歴</HistoryButton> */}
-      <CartButton></CartButton>
+      <CartButton onClick={() => router.push("/carts")}></CartButton>
       <SearchBar onChange={(e) => setKeyWord(e.target.value)} defaultValue={""} />
       <IconButton color="inherit" onClick={(e) => setAnchorEl(e.currentTarget)}>
         <MoreVertOutlined />
       </IconButton>
       <Menu anchorEl={anchorEl} open={open} onClose={() => setAnchorEl(null)}>
-        <MenuItem>
+        {/* <MenuItem>
           <CartButton onClick={() => router.push("/carts")}>カートリスト</CartButton>
-        </MenuItem>
+        </MenuItem> */}
         <MenuItem>
           <HistoryButton onClick={() => router.push("/history")}>履歴</HistoryButton>
         </MenuItem>

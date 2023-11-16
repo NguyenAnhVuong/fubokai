@@ -40,12 +40,9 @@ type Props = {
 };
 
 export const CartItemList = ({ cartItems }: Props) => {
-  const userId = useAuth().userId;
-  const myCartItems = cartItems.filter(({ user }) => user.id === userId);
-
   return (
     <Container>
-      {myCartItems.map(({ id, quantity, menu }) => (
+      {cartItems.map(({ id, quantity, menu }) => (
         <Card key={id}>
           <Badge badgeContent={quantity} color="secondary">
             <StyledImage key={menu.image} src={`/images/${menu.image}`} width={64} height={64} alt={menu.name} />

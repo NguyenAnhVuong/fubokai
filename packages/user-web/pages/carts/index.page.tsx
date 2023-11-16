@@ -1,17 +1,15 @@
+import { useAuth } from "hooks/useAuth";
 import Head from "next/head";
 import { Header } from "./Header";
-import { useGetCartsQuery } from "./queries";
-import { useAuth } from "hooks/useAuth";
-import { useRouter } from "next/dist/client/router";
 import ListCart from "./ListCart";
+import { useGetCartsSubscription } from "./queries";
 
 type Props = {};
 
 const Carts = (props: Props) => {
   const { userId } = useAuth();
-  const router = useRouter();
 
-  const { data: carts } = useGetCartsQuery({
+  const { data: carts } = useGetCartsSubscription({
     variables: {
       userId,
     },

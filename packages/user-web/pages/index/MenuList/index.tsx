@@ -72,18 +72,19 @@ type Props = {
 };
 
 export const MenuList = ({ menus, cartItems, onAdd, onRemove }: Props) => {
-  const userId = useAuth().userId;
-  const cartCountMap = cartItems.reduce((acc, { menuId, quantity, user }) => {
-    if (user.id !== userId) return acc;
-    acc[menuId] = (acc[menuId] ?? 0) + quantity;
-    return acc;
-  }, {} as Record<string, number>);
+  const getQuantity = (menuId: string) => {
+    const cartItem = cartItems.find((cartItem) => cartItem.menuId === menuId);
+    if (cartItem) {
+      return cartItem.quantity;
+    }
+    return 0;
+  };
 
   return (
     <Container>
       {menus.map(({ id, name, price, image }) => (
         <Card key={id}>
-          <Badge badgeContent={cartCountMap[id] ?? 0} color="secondary">
+          <Badge badgeContent={getQuantity(id)} color="secondary">
             <CardImage>
               <StyledImage
                 key={image}
@@ -94,7 +95,7 @@ export const MenuList = ({ menus, cartItems, onAdd, onRemove }: Props) => {
               />
             </CardImage>
             <CardActions>
-              {cartCountMap[id] > 0 && (
+              {!!getQuantity(id) && (
                 <CartActionButton onClick={() => onRemove(id)}>
                   <Remove />
                 </CartActionButton>
