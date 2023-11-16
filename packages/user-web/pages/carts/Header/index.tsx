@@ -5,13 +5,13 @@ import { useAuth } from "hooks/useAuth";
 import { useRouter } from "next/dist/client/router";
 import { useState } from "react";
 import styled from "styled-components";
-import { GetCarts, useAddCartMutation, useAddUserCartMutation } from "../queries";
+import { GetCarts, useCreateCartMutation } from "../queries";
 
 function rand() {
   return Math.round(Math.random() * 20) - 10;
 }
 
-const useStyles = makeStyles((theme) => ({
+export const useStyles = makeStyles((theme) => ({
   modal: {
     display: "flex",
     alignItems: "center",
@@ -59,30 +59,18 @@ export const Header = () => {
 
   const [cartName, setCartName] = useState("");
 
-  const [addCart] = useAddCartMutation();
-  const [addUserCart] = useAddUserCartMutation();
+  const [createCart] = useCreateCartMutation();
 
   const { userId } = useAuth();
 
-  const handleAddCart = async () => {
+  const handleCreateCart = async () => {
     try {
-      const { data: addCartData } = await addCart({ variables: { name: cartName, creatorId: userId } });
-      if (addCartData?.insert_cart_one?.id) {
-        const { data: addUserCartData } = await addUserCart({
-          variables: { userId: userId, cartId: addCartData.insert_cart_one.id },
-          refetchQueries: [
-            {
-              query: GetCarts,
-              variables: {
-                userId,
-              },
-            },
-          ],
-        });
-        if (addUserCartData) {
-          setOpen(false);
-          setCartName("");
-        }
+      const { data } = await createCart({
+        variables: { input: { name: cartName } },
+        refetchQueries: [{ query: GetCarts, variables: { userId } }],
+      });
+      if (data) {
+        handleClose();
       }
     } catch (e) {}
   };
@@ -109,9 +97,15 @@ export const Header = () => {
         <Fade in={open}>
           <div className={classes.paper}>
             <h2 id="transition-modal-title">カートの追加</h2>
-            <TextField label="カート名" variant="outlined" margin="dense" fullWidth onChange={(e) => setCartName(e.target.value)} />
+            <TextField
+              label="カート名"
+              variant="outlined"
+              margin="dense"
+              fullWidth
+              onChange={(e) => setCartName(e.target.value)}
+            />
             <Spacer size={2} />
-            <Button variant="contained" color="primary" onClick={handleAddCart}>
+            <Button variant="contained" color="primary" onClick={handleCreateCart}>
               追加
             </Button>
           </div>

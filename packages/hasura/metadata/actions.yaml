@@ -9,6 +9,16 @@ actions:
       value_from_env: ACTION_SECRET
   permissions:
   - role: user
+- name: createCart
+  definition:
+    kind: synchronous
+    handler: http://host.docker.internal:3000/api/createCart
+    forward_client_headers: true
+    headers:
+    - name: ACTION_SECRET
+      value_from_env: ACTION_SECRET
+  permissions:
+  - role: user
 - name: orderCartItems
   definition:
     kind: synchronous
@@ -59,6 +69,7 @@ custom_types:
   - name: AddMenuIntoInput
   - name: RemoveMenuFromCartInput
   - name: OrderCartItemsInput
+  - name: CreateCartInput
   objects:
   - name: SignUpOutput
   - name: SignInOutput
@@ -67,4 +78,5 @@ custom_types:
   - name: AddMenuIntoOutput
   - name: RemoveMenuFromCartOutput
   - name: OrderCartItemsOutput
+  - name: CreateCartOutput
   scalars: []

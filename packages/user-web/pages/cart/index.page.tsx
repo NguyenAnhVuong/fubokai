@@ -1,13 +1,12 @@
 import { useAuth } from "hooks/useAuth";
 import { useCartItems } from "hooks/useCartItems";
-import { useCartItemsSubscription } from "hooks/useCartItems/queries";
 import { useRouter } from "next/dist/client/router";
 import Head from "next/head";
 import { CartItemList } from "pages/cart/CartItemList";
 import { Fab } from "pages/cart/Fab";
 import { Header } from "pages/cart/Header";
-import { useCartGetCartItemsQuery, useCartOrderCartItemsMutation } from "pages/cart/queries";
-import React, { useCallback } from "react";
+import { useCartOrderCartItemsMutation } from "pages/cart/queries";
+import { useCallback } from "react";
 
 const Cart = () => {
   const { usingCartId } = useAuth();

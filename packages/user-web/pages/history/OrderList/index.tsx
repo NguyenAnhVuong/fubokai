@@ -144,7 +144,7 @@ export const OrderList = ({ cartItems, orders, onAdd, onRemove }: Props) => {
                 <Description>
                   <ColContainer>
                     <Name>{menu.name}</Name>
-                    {/* <Orderer>{user.name}</Orderer> */}
+                    <div>{formatPrice(menu.price)}</div>
                   </ColContainer>
                   <Quantity>x{quantity}</Quantity>
                   <Spacer size={1} />
@@ -164,7 +164,7 @@ export const OrderList = ({ cartItems, orders, onAdd, onRemove }: Props) => {
                 </Description>
               </OrderItem>
             ))}
-          <TotalPrice>合計金額: {totalPrice}</TotalPrice>
+          <TotalPrice>合計金額: {formatPrice(totalPrice)}</TotalPrice>
         </Card>
       ))}
     </Container>

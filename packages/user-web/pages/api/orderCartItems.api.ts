@@ -1,10 +1,8 @@
-import type { NextApiRequest, NextApiResponse } from "next";
 import jwt from "jsonwebtoken";
+import type { NextApiRequest, NextApiResponse } from "next";
 import { isValidRequest } from "pages/api/internal/isValidRequest";
 import { prisma } from "pages/api/internal/prisma";
-import { OrderCartItemsInput, OrderCartItemsOutput, RemoveMenuFromCartInput } from "types/graphql";
-import { groupBy } from "util/groupBy";
-import { sumBy } from "util/sumBy";
+import { OrderCartItemsInput, OrderCartItemsOutput } from "types/graphql";
 
 type Data = OrderCartItemsOutput | { message: string };
 

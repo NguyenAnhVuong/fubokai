@@ -27,6 +27,19 @@
         table:
           name: user
           schema: public
+  select_permissions:
+  - role: user
+    permission:
+      columns:
+      - createdTime
+      - creatorId
+      - id
+      - name
+      - updatedTime
+      filter:
+        userCarts:
+          userId:
+            _eq: X-Hasura-User-Id
 - table:
     name: cartItem
     schema: public
@@ -192,6 +205,17 @@
       - id
       - name
       filter: {}
+  update_permissions:
+  - role: user
+    permission:
+      columns:
+      - name
+      - password
+      - usingCartId
+      filter:
+        id:
+          _eq: X-Hasura-User-Id
+      check: null
 - table:
     name: userCart
     schema: public
@@ -202,3 +226,22 @@
   - name: user
     using:
       foreign_key_constraint_on: userId
+  insert_permissions:
+  - role: user
+    permission:
+      check: {}
+      columns:
+      - cartId
+      - userId
+  select_permissions:
+  - role: user
+    permission:
+      columns:
+      - cartId
+      - created_at
+      - id
+      - updated_at
+      - userId
+      filter:
+        userId:
+          _eq: X-Hasura-User-Id

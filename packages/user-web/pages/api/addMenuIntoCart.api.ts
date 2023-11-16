@@ -13,7 +13,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   if (!token) return res.status(400).json({ message: "Authorization header doesn't exist" });
 
   const tokenResult = jwt.decode(token);
-  if (tokenResult === null || typeof tokenResult === "string") return res.status(400).json({ message: "Invalid token" });
+  if (tokenResult === null || typeof tokenResult === "string")
+    return res.status(400).json({ message: "Invalid token" });
 
   const { id: addedUserId } = tokenResult;
   const { menuId, quantity, cartId } = req.body.input.input as AddMenuIntoCartInput;
@@ -21,7 +22,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   const menu = await prisma.menu.findUnique({ where: { id: menuId } });
   if (menu === null) return res.status(400).json({ message: "Menu doesn't exist" });
 
-  const cartItem = await prisma.cartItem.findFirst({ where: { menuId, addedUserId, cartId } });
+  const cartItem = await prisma.cartItem.findFirst({ where: { menuId, cartId } });
 
   try {
     if (cartItem) {

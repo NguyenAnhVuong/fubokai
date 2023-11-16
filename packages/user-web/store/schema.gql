@@ -1029,6 +1029,14 @@ input category_updates {
   where: category_bool_exp!
 }
 
+input CreateCartInput {
+  name: String!
+}
+
+type CreateCartOutput {
+  success: Boolean!
+}
+
 """ordering argument of a cursor"""
 enum cursor_ordering {
   """ascending ordering of the cursor"""
@@ -1519,6 +1527,7 @@ input menu_variance_order_by {
 """mutation root"""
 type mutation_root {
   addMenuIntoCart(input: AddMenuIntoCartInput!): AddMenuIntoCartOutput
+  createCart(input: CreateCartInput!): CreateCartOutput
 
   """
   delete data from the table: "cart"

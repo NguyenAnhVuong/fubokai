@@ -28,6 +28,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     const { token, usingCartId } = await prisma.$transaction(async (transaction) => {
       const newUser = await transaction.user.create({ data: { id, name, password: hashedPassword } });
       const newCart = await transaction.cart.create({ data: { name: cartName, creatorId: newUser.id } });
+      await transaction.userCart.create({ data: { userId: newUser.id, cartId: newCart.id } });
       await transaction.user.update({ where: { id: newUser.id }, data: { usingCartId: newCart.id } });
       return { token: issueToken(id), usingCartId: newCart.id };
     });
